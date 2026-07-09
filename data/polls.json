@@ -1,0 +1,69 @@
+[
+  {
+    "id": "poll-1",
+    "communityId": "community-oakridge",
+    "question": "Should we add speed bumps on Jacaranda Drive?",
+    "options": [
+      {
+        "id": "yes",
+        "label": "Yes",
+        "votes": [
+          "user-resident-demo"
+        ]
+      },
+      {
+        "id": "no",
+        "label": "No",
+        "votes": []
+      }
+    ],
+    "status": "Active",
+    "createdBy": "user-admin-demo",
+    "createdAt": "2026-07-09T10:00:00.000Z",
+    "updatedAt": "2026-07-09T10:00:00.000Z"
+  },
+  {
+    "id": "poll-2",
+    "communityId": "community-oakridge",
+    "question": "Should security patrols be increased after 20:00?",
+    "options": [
+      {
+        "id": "yes",
+        "label": "Increase patrols",
+        "votes": [
+          "user-resident-demo"
+        ]
+      },
+      {
+        "id": "no",
+        "label": "Current patrols are enough",
+        "votes": []
+      }
+    ],
+    "status": "Active",
+    "createdBy": "user-admin-demo",
+    "createdAt": "2026-07-09T10:10:00.000Z",
+    "updatedAt": "2026-07-09T10:10:00.000Z"
+  },
+  {
+    "id": "poll-3",
+    "communityId": "community-oakridge",
+    "question": "Should we host a community clean-up?",
+    "options": [
+      {
+        "id": "yes",
+        "label": "Yes, this month",
+        "votes": []
+      },
+      {
+        "id": "later",
+        "label": "Later in the year",
+        "votes": []
+      }
+    ],
+    "status": "Closed",
+    "createdBy": "user-admin-demo",
+    "createdAt": "2026-07-05T10:00:00.000Z",
+    "updatedAt": "2026-07-07T10:00:00.000Z"
+  }
+]

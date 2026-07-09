@@ -1,0 +1,218 @@
+[
+  {
+    "id": "power",
+    "name": "Power",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "No current estate-wide outages",
+    "updatedAt": "2026-07-09T07:00:00.000Z",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "water",
+    "name": "Water",
+    "level": "Warning",
+    "status": "Maintenance planned",
+    "detail": "Saturday 08:00 to 12:00",
+    "updatedAt": "2026-07-08T09:00:00.000Z",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "security",
+    "name": "Security",
+    "level": "Critical",
+    "status": "Active security alert",
+    "detail": "Northern perimeter patrol response in progress",
+    "updatedAt": "2026-07-09T07:55:00.000Z",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "roads",
+    "name": "Roads",
+    "level": "Warning",
+    "status": "Minor road issue",
+    "detail": "Jacaranda Drive inspection scheduled",
+    "updatedAt": "2026-07-08T10:00:00.000Z",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "power-community-blue-hills",
+    "name": "Power",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Blue Hills Estate operations are normal",
+    "updatedAt": "2026-07-09T07:00:00.000Z",
+    "communityId": "community-blue-hills"
+  },
+  {
+    "id": "water-community-blue-hills",
+    "name": "Water",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Blue Hills Estate operations are normal",
+    "updatedAt": "2026-07-08T09:00:00.000Z",
+    "communityId": "community-blue-hills"
+  },
+  {
+    "id": "security-community-blue-hills",
+    "name": "Security",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Blue Hills Estate operations are normal",
+    "updatedAt": "2026-07-09T07:55:00.000Z",
+    "communityId": "community-blue-hills"
+  },
+  {
+    "id": "roads-community-blue-hills",
+    "name": "Roads",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Blue Hills Estate operations are normal",
+    "updatedAt": "2026-07-08T10:00:00.000Z",
+    "communityId": "community-blue-hills"
+  },
+  {
+    "id": "power-community-green-gate",
+    "name": "Power",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Green Gate Community operations are normal",
+    "updatedAt": "2026-07-09T07:00:00.000Z",
+    "communityId": "community-green-gate"
+  },
+  {
+    "id": "water-community-green-gate",
+    "name": "Water",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Green Gate Community operations are normal",
+    "updatedAt": "2026-07-08T09:00:00.000Z",
+    "communityId": "community-green-gate"
+  },
+  {
+    "id": "security-community-green-gate",
+    "name": "Security",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Green Gate Community operations are normal",
+    "updatedAt": "2026-07-09T07:55:00.000Z",
+    "communityId": "community-green-gate"
+  },
+  {
+    "id": "roads-community-green-gate",
+    "name": "Roads",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Green Gate Community operations are normal",
+    "updatedAt": "2026-07-08T10:00:00.000Z",
+    "communityId": "community-green-gate"
+  },
+  {
+    "id": "power-community-sunset-apartments",
+    "name": "Power",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Sunset Apartments operations are normal",
+    "updatedAt": "2026-07-09T07:00:00.000Z",
+    "communityId": "community-sunset-apartments"
+  },
+  {
+    "id": "water-community-sunset-apartments",
+    "name": "Water",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Sunset Apartments operations are normal",
+    "updatedAt": "2026-07-08T09:00:00.000Z",
+    "communityId": "community-sunset-apartments"
+  },
+  {
+    "id": "security-community-sunset-apartments",
+    "name": "Security",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Sunset Apartments operations are normal",
+    "updatedAt": "2026-07-09T07:55:00.000Z",
+    "communityId": "community-sunset-apartments"
+  },
+  {
+    "id": "roads-community-sunset-apartments",
+    "name": "Roads",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Sunset Apartments operations are normal",
+    "updatedAt": "2026-07-08T10:00:00.000Z",
+    "communityId": "community-sunset-apartments"
+  },
+  {
+    "id": "power-community-maple-close",
+    "name": "Power",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Maple Close Townhouses operations are normal",
+    "updatedAt": "2026-07-09T07:00:00.000Z",
+    "communityId": "community-maple-close"
+  },
+  {
+    "id": "water-community-maple-close",
+    "name": "Water",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Maple Close Townhouses operations are normal",
+    "updatedAt": "2026-07-08T09:00:00.000Z",
+    "communityId": "community-maple-close"
+  },
+  {
+    "id": "security-community-maple-close",
+    "name": "Security",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Maple Close Townhouses operations are normal",
+    "updatedAt": "2026-07-09T07:55:00.000Z",
+    "communityId": "community-maple-close"
+  },
+  {
+    "id": "roads-community-maple-close",
+    "name": "Roads",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Maple Close Townhouses operations are normal",
+    "updatedAt": "2026-07-08T10:00:00.000Z",
+    "communityId": "community-maple-close"
+  },
+  {
+    "id": "power-community-serenity-village",
+    "name": "Power",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Serenity Retirement Village operations are normal",
+    "updatedAt": "2026-07-09T07:00:00.000Z",
+    "communityId": "community-serenity-village"
+  },
+  {
+    "id": "water-community-serenity-village",
+    "name": "Water",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Serenity Retirement Village operations are normal",
+    "updatedAt": "2026-07-08T09:00:00.000Z",
+    "communityId": "community-serenity-village"
+  },
+  {
+    "id": "security-community-serenity-village",
+    "name": "Security",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Serenity Retirement Village operations are normal",
+    "updatedAt": "2026-07-09T07:55:00.000Z",
+    "communityId": "community-serenity-village"
+  },
+  {
+    "id": "roads-community-serenity-village",
+    "name": "Roads",
+    "level": "Normal",
+    "status": "Normal",
+    "detail": "Serenity Retirement Village operations are normal",
+    "updatedAt": "2026-07-08T10:00:00.000Z",
+    "communityId": "community-serenity-village"
+  }
+]

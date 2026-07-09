@@ -1,0 +1,20 @@
+[
+  {
+    "userId": "user-resident-demo",
+    "name": "Lerato Mokoena",
+    "visible": true,
+    "area": "Jacaranda Drive",
+    "contactPreference": "Message through gatehouse",
+    "updatedAt": "2026-07-09T09:00:00.000Z",
+    "communityId": "community-oakridge"
+  },
+  {
+    "userId": "user-admin-demo",
+    "name": "Admin Manager",
+    "visible": false,
+    "area": "Estate Office",
+    "contactPreference": "Office only",
+    "updatedAt": "2026-07-09T09:00:00.000Z",
+    "communityId": "community-oakridge"
+  }
+]

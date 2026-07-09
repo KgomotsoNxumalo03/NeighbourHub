@@ -1,0 +1,169 @@
+[
+  {
+    "id": "ticket-1001",
+    "reference": "NH-0001",
+    "userId": "user-resident-demo",
+    "residentName": "Lerato Mokoena",
+    "title": "Streetlight out near Gate 2",
+    "description": "The streetlight by the pedestrian walkway has been off for two evenings.",
+    "category": "Streetlight issue",
+    "priority": "Medium",
+    "location": "Gate 2 pedestrian walkway",
+    "imageName": "streetlight-photo.jpg",
+    "imagePreview": "streetlight-photo.jpg",
+    "status": "Open",
+    "adminNotes": "Logged with maintenance contractor.",
+    "adminNotesHistory": [
+      {
+        "id": "note-1001-1",
+        "note": "Logged with maintenance contractor.",
+        "actor": "Admin Manager",
+        "createdAt": "2026-07-06T09:15:00.000Z"
+      }
+    ],
+    "comments": [
+      {
+        "id": "comment-1001-1",
+        "authorId": "user-resident-demo",
+        "authorName": "Lerato Mokoena",
+        "authorRole": "resident",
+        "body": "The path is quite dark after 18:00, especially for residents walking from the gate.",
+        "createdAt": "2026-07-05T18:05:00.000Z"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "timeline-1001-1",
+        "type": "created",
+        "message": "Ticket NH-0001 created",
+        "actor": "Lerato Mokoena",
+        "createdAt": "2026-07-05T17:40:00.000Z"
+      },
+      {
+        "id": "timeline-1001-2",
+        "type": "status",
+        "message": "Status changed from New to Open",
+        "actor": "Admin Manager",
+        "createdAt": "2026-07-06T09:15:00.000Z"
+      },
+      {
+        "id": "timeline-1001-3",
+        "type": "admin-note",
+        "message": "Admin note added",
+        "actor": "Admin Manager",
+        "createdAt": "2026-07-06T09:15:00.000Z"
+      }
+    ],
+    "createdAt": "2026-07-05T17:40:00.000Z",
+    "updatedAt": "2026-07-06T09:15:00.000Z",
+    "communityId": "community-oakridge",
+    "ownerName": "Unassigned",
+    "supporters": []
+  },
+  {
+    "id": "ticket-1002",
+    "reference": "NH-0002",
+    "userId": "user-resident-demo",
+    "residentName": "Lerato Mokoena",
+    "title": "Pothole on Jacaranda Drive",
+    "description": "A pothole is forming close to the speed bump and is difficult to see at night.",
+    "category": "Pothole or road issue",
+    "priority": "High",
+    "location": "Jacaranda Drive, speed bump 3",
+    "imageName": "",
+    "imagePreview": "",
+    "status": "In Progress",
+    "adminNotes": "Roads team scheduled inspection.",
+    "adminNotesHistory": [
+      {
+        "id": "note-1002-1",
+        "note": "Roads team scheduled inspection.",
+        "actor": "Admin Manager",
+        "createdAt": "2026-07-08T10:00:00.000Z"
+      }
+    ],
+    "comments": [],
+    "timeline": [
+      {
+        "id": "timeline-1002-1",
+        "type": "created",
+        "message": "Ticket NH-0002 created",
+        "actor": "Lerato Mokoena",
+        "createdAt": "2026-07-07T12:25:00.000Z"
+      },
+      {
+        "id": "timeline-1002-2",
+        "type": "status",
+        "message": "Status changed from Open to In Progress",
+        "actor": "Admin Manager",
+        "createdAt": "2026-07-08T10:00:00.000Z"
+      }
+    ],
+    "createdAt": "2026-07-07T12:25:00.000Z",
+    "updatedAt": "2026-07-08T10:00:00.000Z",
+    "communityId": "community-oakridge",
+    "ownerName": "Unassigned",
+    "supporters": []
+  },
+  {
+    "id": "ticket-1003",
+    "reference": "NH-0003",
+    "userId": "user-resident-demo",
+    "residentName": "Lerato Mokoena",
+    "title": "Suspicious vehicle near northern perimeter",
+    "description": "A grey vehicle has been parked near the northern perimeter for more than an hour with no visible visitor access tag.",
+    "category": "Suspicious activity",
+    "priority": "Emergency",
+    "location": "Northern perimeter fence",
+    "imageName": "vehicle-placeholder.jpg",
+    "imagePreview": "vehicle-placeholder.jpg",
+    "status": "Open",
+    "adminNotes": "Security patrol dispatched for verification.",
+    "adminNotesHistory": [
+      {
+        "id": "note-1003-1",
+        "note": "Security patrol dispatched for verification.",
+        "actor": "Admin Manager",
+        "createdAt": "2026-07-09T07:45:00.000Z"
+      }
+    ],
+    "comments": [
+      {
+        "id": "comment-1003-1",
+        "authorId": "user-admin-demo",
+        "authorName": "Admin Manager",
+        "authorRole": "admin",
+        "body": "Control room has been notified and patrol is checking the area.",
+        "createdAt": "2026-07-09T07:48:00.000Z"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "timeline-1003-1",
+        "type": "created",
+        "message": "Ticket NH-0003 created",
+        "actor": "Lerato Mokoena",
+        "createdAt": "2026-07-09T07:40:00.000Z"
+      },
+      {
+        "id": "timeline-1003-2",
+        "type": "admin-note",
+        "message": "Admin note added",
+        "actor": "Admin Manager",
+        "createdAt": "2026-07-09T07:45:00.000Z"
+      },
+      {
+        "id": "timeline-1003-3",
+        "type": "comment",
+        "message": "Comment added",
+        "actor": "Admin Manager",
+        "createdAt": "2026-07-09T07:48:00.000Z"
+      }
+    ],
+    "createdAt": "2026-07-09T07:40:00.000Z",
+    "updatedAt": "2026-07-09T07:48:00.000Z",
+    "communityId": "community-oakridge",
+    "ownerName": "Unassigned",
+    "supporters": []
+  }
+]

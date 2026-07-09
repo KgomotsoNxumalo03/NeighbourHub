@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f8fa;
+  --foreground: #1b1b1b;
 }
 
 @theme inline {
@@ -12,15 +12,67 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: rgba(200, 162, 58, 0.28);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  transition-property: color, background-color, border-color, box-shadow, transform;
+  transition-duration: 180ms;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(200, 162, 58, 0.45);
+  outline-offset: 2px;
+}
+
+input,
+textarea {
+  background: #ffffff;
+}
+
+input:hover,
+textarea:hover {
+  border-color: rgba(200, 162, 58, 0.75);
+}
+
+input:focus,
+textarea:focus {
+  border-color: #006b3c;
+  box-shadow: 0 0 0 3px rgba(200, 162, 58, 0.22);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  main,
+  article,
+  aside,
+  section {
+    animation: nh-fade-in 180ms ease-out;
+  }
+}
+
+@keyframes nh-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

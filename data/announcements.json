@@ -1,0 +1,35 @@
+[
+  {
+    "id": "announcement-1",
+    "title": "Northern perimeter security alert",
+    "body": "Security is investigating suspicious activity near the northern perimeter. Please avoid the area and report anything urgent through Emergency Reporting.",
+    "audience": "All residents",
+    "priority": "Emergency",
+    "expiresAt": "2026-07-16",
+    "createdAt": "2026-07-09T07:55:00.000Z",
+    "updatedAt": "2026-07-09T07:55:00.000Z",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "announcement-2",
+    "title": "Planned water maintenance",
+    "body": "Municipal teams will perform maintenance on Saturday from 08:00 to 12:00. Please store water in advance.",
+    "audience": "All residents",
+    "priority": "Important",
+    "expiresAt": "2026-07-14",
+    "createdAt": "2026-07-08T09:00:00.000Z",
+    "updatedAt": "2026-07-08T09:00:00.000Z",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "announcement-3",
+    "title": "Security patrol update",
+    "body": "Additional evening patrols have been added around the northern perimeter this week.",
+    "audience": "All residents",
+    "priority": "Normal",
+    "expiresAt": "2026-07-20",
+    "createdAt": "2026-07-06T15:30:00.000Z",
+    "updatedAt": "2026-07-06T15:30:00.000Z",
+    "communityId": "community-oakridge"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "gallery-1",
+    "communityId": "community-oakridge",
+    "title": "Clean-up morning",
+    "category": "Community",
+    "imageName": "cleanup-placeholder.jpg",
+    "description": "Residents gathered for the July clean-up.",
+    "uploadedBy": "Admin Manager",
+    "createdAt": "2026-07-06T11:00:00.000Z"
+  },
+  {
+    "id": "gallery-2",
+    "communityId": "community-oakridge",
+    "title": "Streetlight repair completed",
+    "category": "Maintenance",
+    "imageName": "streetlight-complete.jpg",
+    "description": "Maintenance completed near Gate 2.",
+    "uploadedBy": "Admin Manager",
+    "createdAt": "2026-07-07T14:00:00.000Z"
+  }
+]

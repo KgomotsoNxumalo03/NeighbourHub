@@ -1,0 +1,32 @@
+[
+  {
+    "id": "lf-1",
+    "type": "Lost pet",
+    "title": "Missing ginger cat",
+    "description": "Small ginger cat with a blue collar last seen near Jacaranda Drive.",
+    "location": "Jacaranda Drive",
+    "imageName": "ginger-cat-placeholder.jpg",
+    "contactPreference": "Contact through gatehouse",
+    "status": "Open",
+    "reporterId": "user-resident-demo",
+    "reporterName": "Lerato Mokoena",
+    "createdAt": "2026-07-09T06:30:00.000Z",
+    "updatedAt": "2026-07-09T06:30:00.000Z",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "lf-2",
+    "type": "Found item",
+    "title": "Found remote at clubhouse",
+    "description": "Gate remote found on a table after the weekend braai.",
+    "location": "Clubhouse",
+    "imageName": "",
+    "contactPreference": "Collect from control room",
+    "status": "Open",
+    "reporterId": "user-admin-demo",
+    "reporterName": "Admin Manager",
+    "createdAt": "2026-07-07T10:00:00.000Z",
+    "updatedAt": "2026-07-07T10:00:00.000Z",
+    "communityId": "community-oakridge"
+  }
+]

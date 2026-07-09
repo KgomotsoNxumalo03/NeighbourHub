@@ -1,0 +1,26 @@
+[
+  {
+    "id": "notification-1",
+    "userId": "all",
+    "type": "Emergency announcement",
+    "title": "Security alert active",
+    "body": "Northern perimeter security alert is currently active.",
+    "readBy": [],
+    "href": "/announcements",
+    "createdAt": "2026-07-09T08:00:00.000Z",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "notification-2",
+    "userId": "all",
+    "type": "Upcoming event",
+    "title": "Community safety briefing",
+    "body": "Upcoming safety briefing at the clubhouse.",
+    "readBy": [
+      "user-admin-demo"
+    ],
+    "href": "/events",
+    "createdAt": "2026-07-09T09:10:00.000Z",
+    "communityId": "community-oakridge"
+  }
+]

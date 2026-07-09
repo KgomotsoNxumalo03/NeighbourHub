@@ -1,0 +1,42 @@
+[
+  {
+    "id": "post-1",
+    "type": "Safety alert",
+    "title": "Reminder: keep gate access codes private",
+    "body": "Please do not share gate codes in public chats. Ask visitors to use the intercom at the gatehouse.",
+    "authorId": "user-admin-demo",
+    "authorName": "Admin Manager",
+    "authorRole": "admin",
+    "pinned": true,
+    "likes": [
+      "user-resident-demo"
+    ],
+    "comments": [
+      {
+        "id": "post-comment-1",
+        "authorId": "user-resident-demo",
+        "authorName": "Lerato Mokoena",
+        "body": "Good reminder, thank you.",
+        "createdAt": "2026-07-09T08:15:00.000Z"
+      }
+    ],
+    "createdAt": "2026-07-09T08:00:00.000Z",
+    "updatedAt": "2026-07-09T08:15:00.000Z",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "post-2",
+    "type": "Recommendation",
+    "title": "Reliable plumber for small leaks",
+    "body": "I had a good experience with a local plumber this week. Happy to share details by message.",
+    "authorId": "user-resident-demo",
+    "authorName": "Lerato Mokoena",
+    "authorRole": "resident",
+    "pinned": false,
+    "likes": [],
+    "comments": [],
+    "createdAt": "2026-07-08T16:20:00.000Z",
+    "updatedAt": "2026-07-08T16:20:00.000Z",
+    "communityId": "community-oakridge"
+  }
+]

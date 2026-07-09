@@ -1,0 +1,296 @@
+[
+  {
+    "id": "police",
+    "name": "Police",
+    "phone": "10111",
+    "detail": "Crime reporting and urgent police response",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "ambulance",
+    "name": "Ambulance",
+    "phone": "10177",
+    "detail": "Medical emergencies and ambulance dispatch",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "fire",
+    "name": "Fire Department",
+    "phone": "011 375 5911",
+    "detail": "Fire and rescue services",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "security",
+    "name": "Local Security",
+    "phone": "082 555 0184",
+    "detail": "Estate patrol and incident response",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "watch",
+    "name": "Neighbourhood Watch",
+    "phone": "079 555 0142",
+    "detail": "Community watch coordinator",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "municipality",
+    "name": "Municipality",
+    "phone": "0860 562 874",
+    "detail": "Service delivery, roads, power, and water faults",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "gatehouse",
+    "name": "Gatehouse / Control Room",
+    "phone": "011 555 0199",
+    "detail": "Visitor access and estate control room",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "police-community-blue-hills",
+    "name": "Police",
+    "phone": "10111",
+    "detail": "Crime reporting and urgent police response",
+    "communityId": "community-blue-hills"
+  },
+  {
+    "id": "ambulance-community-blue-hills",
+    "name": "Ambulance",
+    "phone": "10177",
+    "detail": "Medical emergencies and ambulance dispatch",
+    "communityId": "community-blue-hills"
+  },
+  {
+    "id": "fire-community-blue-hills",
+    "name": "Fire Department",
+    "phone": "011 375 5911",
+    "detail": "Fire and rescue services",
+    "communityId": "community-blue-hills"
+  },
+  {
+    "id": "security-community-blue-hills",
+    "name": "Local Security",
+    "phone": "082 555 0184",
+    "detail": "Estate patrol and incident response",
+    "communityId": "community-blue-hills"
+  },
+  {
+    "id": "watch-community-blue-hills",
+    "name": "Neighbourhood Watch",
+    "phone": "079 555 0142",
+    "detail": "Community watch coordinator",
+    "communityId": "community-blue-hills"
+  },
+  {
+    "id": "municipality-community-blue-hills",
+    "name": "Municipality",
+    "phone": "0860 562 874",
+    "detail": "Service delivery, roads, power, and water faults",
+    "communityId": "community-blue-hills"
+  },
+  {
+    "id": "gatehouse-community-blue-hills",
+    "name": "Gatehouse / Control Room",
+    "phone": "011 555 0199",
+    "detail": "Visitor access and estate control room",
+    "communityId": "community-blue-hills"
+  },
+  {
+    "id": "police-community-green-gate",
+    "name": "Police",
+    "phone": "10111",
+    "detail": "Crime reporting and urgent police response",
+    "communityId": "community-green-gate"
+  },
+  {
+    "id": "ambulance-community-green-gate",
+    "name": "Ambulance",
+    "phone": "10177",
+    "detail": "Medical emergencies and ambulance dispatch",
+    "communityId": "community-green-gate"
+  },
+  {
+    "id": "fire-community-green-gate",
+    "name": "Fire Department",
+    "phone": "011 375 5911",
+    "detail": "Fire and rescue services",
+    "communityId": "community-green-gate"
+  },
+  {
+    "id": "security-community-green-gate",
+    "name": "Local Security",
+    "phone": "082 555 0184",
+    "detail": "Estate patrol and incident response",
+    "communityId": "community-green-gate"
+  },
+  {
+    "id": "watch-community-green-gate",
+    "name": "Neighbourhood Watch",
+    "phone": "079 555 0142",
+    "detail": "Community watch coordinator",
+    "communityId": "community-green-gate"
+  },
+  {
+    "id": "municipality-community-green-gate",
+    "name": "Municipality",
+    "phone": "0860 562 874",
+    "detail": "Service delivery, roads, power, and water faults",
+    "communityId": "community-green-gate"
+  },
+  {
+    "id": "gatehouse-community-green-gate",
+    "name": "Gatehouse / Control Room",
+    "phone": "011 555 0199",
+    "detail": "Visitor access and estate control room",
+    "communityId": "community-green-gate"
+  },
+  {
+    "id": "police-community-sunset-apartments",
+    "name": "Police",
+    "phone": "10111",
+    "detail": "Crime reporting and urgent police response",
+    "communityId": "community-sunset-apartments"
+  },
+  {
+    "id": "ambulance-community-sunset-apartments",
+    "name": "Ambulance",
+    "phone": "10177",
+    "detail": "Medical emergencies and ambulance dispatch",
+    "communityId": "community-sunset-apartments"
+  },
+  {
+    "id": "fire-community-sunset-apartments",
+    "name": "Fire Department",
+    "phone": "011 375 5911",
+    "detail": "Fire and rescue services",
+    "communityId": "community-sunset-apartments"
+  },
+  {
+    "id": "security-community-sunset-apartments",
+    "name": "Local Security",
+    "phone": "082 555 0184",
+    "detail": "Estate patrol and incident response",
+    "communityId": "community-sunset-apartments"
+  },
+  {
+    "id": "watch-community-sunset-apartments",
+    "name": "Neighbourhood Watch",
+    "phone": "079 555 0142",
+    "detail": "Community watch coordinator",
+    "communityId": "community-sunset-apartments"
+  },
+  {
+    "id": "municipality-community-sunset-apartments",
+    "name": "Municipality",
+    "phone": "0860 562 874",
+    "detail": "Service delivery, roads, power, and water faults",
+    "communityId": "community-sunset-apartments"
+  },
+  {
+    "id": "gatehouse-community-sunset-apartments",
+    "name": "Gatehouse / Control Room",
+    "phone": "011 555 0199",
+    "detail": "Visitor access and estate control room",
+    "communityId": "community-sunset-apartments"
+  },
+  {
+    "id": "police-community-maple-close",
+    "name": "Police",
+    "phone": "10111",
+    "detail": "Crime reporting and urgent police response",
+    "communityId": "community-maple-close"
+  },
+  {
+    "id": "ambulance-community-maple-close",
+    "name": "Ambulance",
+    "phone": "10177",
+    "detail": "Medical emergencies and ambulance dispatch",
+    "communityId": "community-maple-close"
+  },
+  {
+    "id": "fire-community-maple-close",
+    "name": "Fire Department",
+    "phone": "011 375 5911",
+    "detail": "Fire and rescue services",
+    "communityId": "community-maple-close"
+  },
+  {
+    "id": "security-community-maple-close",
+    "name": "Local Security",
+    "phone": "082 555 0184",
+    "detail": "Estate patrol and incident response",
+    "communityId": "community-maple-close"
+  },
+  {
+    "id": "watch-community-maple-close",
+    "name": "Neighbourhood Watch",
+    "phone": "079 555 0142",
+    "detail": "Community watch coordinator",
+    "communityId": "community-maple-close"
+  },
+  {
+    "id": "municipality-community-maple-close",
+    "name": "Municipality",
+    "phone": "0860 562 874",
+    "detail": "Service delivery, roads, power, and water faults",
+    "communityId": "community-maple-close"
+  },
+  {
+    "id": "gatehouse-community-maple-close",
+    "name": "Gatehouse / Control Room",
+    "phone": "011 555 0199",
+    "detail": "Visitor access and estate control room",
+    "communityId": "community-maple-close"
+  },
+  {
+    "id": "police-community-serenity-village",
+    "name": "Police",
+    "phone": "10111",
+    "detail": "Crime reporting and urgent police response",
+    "communityId": "community-serenity-village"
+  },
+  {
+    "id": "ambulance-community-serenity-village",
+    "name": "Ambulance",
+    "phone": "10177",
+    "detail": "Medical emergencies and ambulance dispatch",
+    "communityId": "community-serenity-village"
+  },
+  {
+    "id": "fire-community-serenity-village",
+    "name": "Fire Department",
+    "phone": "011 375 5911",
+    "detail": "Fire and rescue services",
+    "communityId": "community-serenity-village"
+  },
+  {
+    "id": "security-community-serenity-village",
+    "name": "Local Security",
+    "phone": "082 555 0184",
+    "detail": "Estate patrol and incident response",
+    "communityId": "community-serenity-village"
+  },
+  {
+    "id": "watch-community-serenity-village",
+    "name": "Neighbourhood Watch",
+    "phone": "079 555 0142",
+    "detail": "Community watch coordinator",
+    "communityId": "community-serenity-village"
+  },
+  {
+    "id": "municipality-community-serenity-village",
+    "name": "Municipality",
+    "phone": "0860 562 874",
+    "detail": "Service delivery, roads, power, and water faults",
+    "communityId": "community-serenity-village"
+  },
+  {
+    "id": "gatehouse-community-serenity-village",
+    "name": "Gatehouse / Control Room",
+    "phone": "011 555 0199",
+    "detail": "Visitor access and estate control room",
+    "communityId": "community-serenity-village"
+  }
+]

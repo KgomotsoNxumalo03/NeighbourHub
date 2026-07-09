@@ -1,0 +1,32 @@
+[
+  {
+    "id": "event-1",
+    "title": "Community safety briefing",
+    "description": "Security team briefing on perimeter awareness and reporting channels.",
+    "date": "2026-07-18",
+    "time": "10:00",
+    "location": "Clubhouse",
+    "category": "Safety",
+    "createdBy": "user-admin-demo",
+    "rsvps": [
+      "user-resident-demo"
+    ],
+    "createdAt": "2026-07-09T09:00:00.000Z",
+    "updatedAt": "2026-07-09T09:00:00.000Z",
+    "communityId": "community-oakridge"
+  },
+  {
+    "id": "event-2",
+    "title": "Neighbourhood clean-up morning",
+    "description": "Meet at the park entrance for a light clean-up and coffee afterwards.",
+    "date": "2026-07-25",
+    "time": "08:30",
+    "location": "Oakridge Park",
+    "category": "Community",
+    "createdBy": "user-admin-demo",
+    "rsvps": [],
+    "createdAt": "2026-07-08T12:00:00.000Z",
+    "updatedAt": "2026-07-08T12:00:00.000Z",
+    "communityId": "community-oakridge"
+  }
+]

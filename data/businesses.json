@@ -1,0 +1,32 @@
+[
+  {
+    "id": "biz-1",
+    "communityId": "community-oakridge",
+    "name": "FixRight Plumbing",
+    "category": "Plumber",
+    "description": "Leak repairs and geyser callouts for the area.",
+    "contact": "082 555 0134",
+    "area": "Oakridge",
+    "rating": 4.6,
+    "recommendedBy": [
+      "user-resident-demo"
+    ],
+    "approved": true,
+    "createdAt": "2026-07-08T09:00:00.000Z",
+    "updatedAt": "2026-07-08T09:00:00.000Z"
+  },
+  {
+    "id": "biz-2",
+    "communityId": "community-oakridge",
+    "name": "SecureLink Patrol Services",
+    "category": "Security",
+    "description": "Local armed response and patrol support.",
+    "contact": "011 555 0188",
+    "area": "Oakridge",
+    "rating": 4.4,
+    "recommendedBy": [],
+    "approved": true,
+    "createdAt": "2026-07-08T12:00:00.000Z",
+    "updatedAt": "2026-07-08T12:00:00.000Z"
+  }
+]

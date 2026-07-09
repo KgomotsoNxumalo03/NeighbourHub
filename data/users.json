@@ -1,0 +1,69 @@
+[
+  {
+    "id": "user-resident-demo",
+    "name": "Lerato Mokoena",
+    "email": "resident@neighbourhub.local",
+    "password": "resident123",
+    "role": "resident",
+    "createdAt": "2026-07-01T08:00:00.000Z",
+    "communityId": "community-oakridge",
+    "address": {
+      "streetNumber": "12",
+      "streetName": "Jacaranda Drive"
+    }
+  },
+  {
+    "id": "user-admin-demo",
+    "name": "Admin Manager",
+    "email": "admin@neighbourhub.local",
+    "password": "admin123",
+    "role": "admin",
+    "createdAt": "2026-07-01T08:00:00.000Z",
+    "communityId": "community-oakridge",
+    "address": {
+      "streetNumber": "12",
+      "streetName": "Jacaranda Drive"
+    }
+  },
+  {
+    "id": "user-estate-resident",
+    "name": "Thabo Dlamini",
+    "email": "estate@neighbourhub.local",
+    "password": "estate123",
+    "role": "resident",
+    "communityId": "community-blue-hills",
+    "address": {
+      "estateName": "Blue Hills Estate",
+      "houseNumber": "48"
+    },
+    "createdAt": "2026-07-09T10:00:00.000Z"
+  },
+  {
+    "id": "user-apartment-admin",
+    "name": "Apartment Admin",
+    "email": "apartment-admin@neighbourhub.local",
+    "password": "admin123",
+    "role": "admin",
+    "communityId": "community-sunset-apartments",
+    "address": {
+      "complexName": "Sunset Apartments",
+      "building": "B",
+      "floor": "4",
+      "unitNumber": "402"
+    },
+    "createdAt": "2026-07-09T10:00:00.000Z"
+  },
+  {
+    "id": "user-super-admin",
+    "name": "Super Admin",
+    "email": "super@neighbourhub.local",
+    "password": "super123",
+    "role": "super-admin",
+    "communityId": "community-oakridge",
+    "address": {
+      "streetNumber": "1",
+      "streetName": "Platform Way"
+    },
+    "createdAt": "2026-07-09T10:00:00.000Z"
+  }
+]

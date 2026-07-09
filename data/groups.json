@@ -1,0 +1,31 @@
+[
+  {
+    "id": "group-watch",
+    "communityId": "community-oakridge",
+    "name": "Neighbourhood Watch",
+    "description": "Volunteer safety observation and reporting group.",
+    "upcomingActivity": "Friday 18:00 patrol briefing",
+    "members": [
+      "user-resident-demo"
+    ],
+    "createdAt": "2026-07-01T08:00:00.000Z"
+  },
+  {
+    "id": "group-running",
+    "communityId": "community-oakridge",
+    "name": "Running Club",
+    "description": "Weekly resident social runs.",
+    "upcomingActivity": "Saturday 07:00 park entrance",
+    "members": [],
+    "createdAt": "2026-07-01T08:00:00.000Z"
+  },
+  {
+    "id": "group-cleanup",
+    "communityId": "community-oakridge",
+    "name": "Community Clean-up",
+    "description": "Volunteer clean-up group for parks and verges.",
+    "upcomingActivity": "Next clean-up after water maintenance",
+    "members": [],
+    "createdAt": "2026-07-01T08:00:00.000Z"
+  }
+]
