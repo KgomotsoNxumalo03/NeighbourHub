@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readData, writeData } from "@/lib/data-store";
-import { normalizeTickets } from "@/lib/tickets";
-import { ticketCategories, ticketStatuses } from "@/lib/constants";
+import { areaFromLocation, getTicketSla, normalizeTickets } from "@/lib/tickets";
+import { ticketCategories, ticketPriorities, ticketStatuses } from "@/lib/constants";
 
 export async function GET(request: NextRequest) {
   const communityId = new URL(request.url).searchParams.get("communityId");
@@ -17,7 +17,14 @@ export async function GET(request: NextRequest) {
     label: category,
     count: tickets.filter((ticket) => ticket.category === category).length,
   })).filter((item) => item.count > 0);
+  const byPriority = ticketPriorities.map((priority) => ({
+    label: priority,
+    count: tickets.filter((ticket) => ticket.priority === priority).length,
+  }));
   const emergencyTickets = tickets.filter((ticket) => ticket.priority === "Emergency");
+  const overdueTickets = tickets.filter((ticket) => getTicketSla(ticket).overdue);
+  const openedCount = tickets.length;
+  const resolvedCount = tickets.filter((ticket) => ticket.status === "Resolved" || ticket.status === "Closed").length;
   const resolvedTickets = tickets.filter((ticket) => ticket.status === "Resolved" || ticket.status === "Closed");
   const averageResolutionHours = resolvedTickets.length
     ? Math.round(
@@ -25,6 +32,15 @@ export async function GET(request: NextRequest) {
           resolvedTickets.length,
       )
     : null;
+  const areaCounts = Object.entries(
+    tickets.reduce<Record<string, number>>((acc, ticket) => {
+      const area = areaFromLocation(ticket.location);
+      acc[area] = (acc[area] || 0) + 1;
+      return acc;
+    }, {}),
+  )
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count);
   const recentAdminActivity = tickets
     .flatMap((ticket) =>
       ticket.timeline
@@ -37,7 +53,14 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     byStatus,
     byCategory,
+    byPriority,
     emergencyTickets,
+    overdueTickets,
+    openedVsResolved: [
+      { label: "Opened", count: openedCount },
+      { label: "Resolved", count: resolvedCount },
+    ],
+    mostReportedAreas: areaCounts.slice(0, 6),
     averageResolutionHours,
     recentAdminActivity,
   });

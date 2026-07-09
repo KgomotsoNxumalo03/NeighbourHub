@@ -114,6 +114,8 @@ export type Ticket = {
   status: TicketStatus;
   ownerName: string;
   supporters: string[];
+  estimatedCompletionAt?: string;
+  resolutionNotes?: string;
   adminNotes: string;
   adminNotesHistory: AdminNote[];
   comments: TicketComment[];

@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const { id, status, adminNotes, action, comment, actorName, actorRole, actorId, ownerName } = await request.json();
+  const { id, status, adminNotes, action, comment, actorName, actorRole, actorId, ownerName, estimatedCompletionAt, resolutionNotes } = await request.json();
   const rawTickets = await readData("tickets");
   const normalized = normalizeTickets(rawTickets);
   const tickets = normalized.tickets;
@@ -209,6 +209,14 @@ export async function PATCH(request: NextRequest) {
       actor,
       createdAt: now,
     });
+  }
+
+  if (typeof estimatedCompletionAt === "string") {
+    ticket.estimatedCompletionAt = estimatedCompletionAt;
+  }
+
+  if (typeof resolutionNotes === "string") {
+    ticket.resolutionNotes = resolutionNotes.trim();
   }
 
   if (status && status !== ticket.status) {

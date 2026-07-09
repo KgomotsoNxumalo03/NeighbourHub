@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Activity, AlertTriangle, BarChart3, Clock3, Tags } from "lucide-react";
+import { Activity, AlertTriangle, Clock3, Tags } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { PriorityBadge, StatusBadge } from "@/components/StatusBadge";
 import { formatDate } from "@/lib/format";
@@ -15,7 +15,11 @@ type AdminActivity = TicketActivity & { ticketId: string; reference: string; tit
 type Reports = {
   byStatus: ReportRow[];
   byCategory: ReportRow[];
+  byPriority: ReportRow[];
   emergencyTickets: Ticket[];
+  overdueTickets: Ticket[];
+  openedVsResolved: ReportRow[];
+  mostReportedAreas: ReportRow[];
   averageResolutionHours: number | null;
   recentAdminActivity: AdminActivity[];
 };
@@ -43,7 +47,7 @@ export default function ReportsPage() {
         <div className="space-y-6">
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <Summary title="Emergency tickets" value={reports.emergencyTickets.length} icon={AlertTriangle} tone="red" />
-            <Summary title="Status groups" value={reports.byStatus.length} icon={BarChart3} tone="green" />
+            <Summary title="Overdue tickets" value={reports.overdueTickets.length} icon={Clock3} tone="red" />
             <Summary title="Active categories" value={reports.byCategory.length} icon={Tags} tone="gold" />
             <Summary title="Avg resolution" value={reports.averageResolutionHours === null ? "N/A" : `${reports.averageResolutionHours}h`} icon={Clock3} tone="neutral" />
           </section>
@@ -51,6 +55,9 @@ export default function ReportsPage() {
           <section className="grid gap-6 xl:grid-cols-2">
             <ReportCard title="Tickets by status" rows={reports.byStatus} />
             <ReportCard title="Tickets by category" rows={reports.byCategory} />
+            <ReportCard title="Tickets by priority" rows={reports.byPriority} />
+            <ReportCard title="Opened vs resolved" rows={reports.openedVsResolved} />
+            <ReportCard title="Most reported areas" rows={reports.mostReportedAreas} />
           </section>
 
           <section className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">

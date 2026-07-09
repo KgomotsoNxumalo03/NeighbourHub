@@ -70,11 +70,11 @@ export default function AdminPage() {
     };
   }, [tickets]);
 
-  async function updateTicket(ticket: Ticket, status: string, adminNotes: string, ownerName: string) {
+  async function updateTicket(ticket: Ticket, status: string, adminNotes: string, ownerName: string, estimatedCompletionAt: string, resolutionNotes: string) {
     await fetch("/api/tickets", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: ticket.id, status, adminNotes, ownerName, actorName: "Admin Manager", actorRole: "admin" }),
+      body: JSON.stringify({ id: ticket.id, status, adminNotes, ownerName, estimatedCompletionAt, resolutionNotes, actorName: "Admin Manager", actorRole: "admin" }),
     });
     await loadTickets();
   }
@@ -285,15 +285,17 @@ function Stat({ title, value, icon: Icon }: { title: string; value: number; icon
   );
 }
 
-function AdminTicket({ ticket, onSave }: { ticket: Ticket; onSave: (ticket: Ticket, status: string, adminNotes: string, ownerName: string) => Promise<void> }) {
+function AdminTicket({ ticket, onSave }: { ticket: Ticket; onSave: (ticket: Ticket, status: string, adminNotes: string, ownerName: string, estimatedCompletionAt: string, resolutionNotes: string) => Promise<void> }) {
   const [status, setStatus] = useState(ticket.status);
   const [adminNotes, setAdminNotes] = useState(ticket.adminNotes);
   const [ownerName, setOwnerName] = useState(ticket.ownerName || "Unassigned");
+  const [estimatedCompletionAt, setEstimatedCompletionAt] = useState(ticket.estimatedCompletionAt || "");
+  const [resolutionNotes, setResolutionNotes] = useState(ticket.resolutionNotes || "");
   const [saving, setSaving] = useState(false);
 
   async function save() {
     setSaving(true);
-    await onSave(ticket, status, adminNotes, ownerName);
+    await onSave(ticket, status, adminNotes, ownerName, estimatedCompletionAt, resolutionNotes);
     setSaving(false);
   }
 
@@ -326,6 +328,10 @@ function AdminTicket({ ticket, onSave }: { ticket: Ticket; onSave: (ticket: Tick
         <button onClick={save} disabled={saving} className="rounded-lg bg-[#006B3C] px-4 py-2 text-sm font-bold text-white hover:bg-[#00522f] disabled:opacity-60">
           {saving ? "Saving..." : "Save"}
         </button>
+      </div>
+      <div className="mt-3 grid gap-3 md:grid-cols-2">
+        <input className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm" value={estimatedCompletionAt} onChange={(event) => setEstimatedCompletionAt(event.target.value)} placeholder="Estimated completion, e.g. Friday 14:00" />
+        <input className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm" value={resolutionNotes} onChange={(event) => setResolutionNotes(event.target.value)} placeholder="Resolution notes" />
       </div>
       {ticket.adminNotesHistory.length > 0 && (
         <details className="mt-3 rounded-lg bg-white p-3 text-sm">

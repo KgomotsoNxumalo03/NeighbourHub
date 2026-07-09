@@ -8,6 +8,7 @@ import { PriorityBadge, StatusBadge } from "@/components/StatusBadge";
 import { getCurrentUser } from "@/lib/client-auth";
 import type { Ticket } from "@/lib/types";
 import { getStoredCommunityId } from "@/lib/community";
+import { getTicketSla } from "@/lib/tickets";
 
 export default function TicketsPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -50,7 +51,7 @@ export default function TicketsPage() {
       <div className="grid gap-4">
         {loading && <p className="rounded-lg border border-zinc-200 bg-white p-6 text-sm text-zinc-600">Loading tickets...</p>}
         {tickets.map((ticket) => (
-          <Link key={ticket.id} href={`/tickets/${ticket.id}`} className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm hover:-translate-y-0.5 hover:shadow-md">
+          <Link key={ticket.id} href={`/tickets/${ticket.id}`} className={`rounded-lg border bg-white p-5 shadow-sm hover:-translate-y-0.5 hover:shadow-md ${getTicketSla(ticket).overdue ? "border-red-200 ring-2 ring-red-100" : "border-zinc-200"}`}>
             <div className="flex flex-col justify-between gap-3 md:flex-row md:items-start">
               <div>
                 <p className="text-sm font-bold text-[#006B3C]">{ticket.reference}</p>
@@ -63,6 +64,15 @@ export default function TicketsPage() {
               <p><span className="font-semibold text-zinc-900">Category:</span> {ticket.category}</p>
               <p><span className="font-semibold text-zinc-900">Location:</span> {ticket.location}</p>
               <p><span className="font-semibold text-zinc-900">Updated:</span> {new Date(ticket.updatedAt).toLocaleDateString()}</p>
+            </div>
+            <div className="mt-4">
+              <div className="flex justify-between text-xs font-bold text-zinc-500">
+                <span>SLA progress</span>
+                <span>{getTicketSla(ticket).overdue ? "Overdue" : `${getTicketSla(ticket).hoursRemaining}h remaining`}</span>
+              </div>
+              <div className="mt-2 h-2 rounded-full bg-zinc-100">
+                <div className={`h-2 rounded-full ${getTicketSla(ticket).overdue ? "bg-red-600" : "bg-[#C8A23A]"}`} style={{ width: `${getTicketSla(ticket).progress}%` }} />
+              </div>
             </div>
             {ticket.adminNotes && <p className="mt-4 rounded-lg bg-[#F7F8FA] p-3 text-sm text-zinc-700"><span className="font-bold">Admin note:</span> {ticket.adminNotes}</p>}
           </Link>

@@ -10,6 +10,7 @@ import { getCurrentUser } from "@/lib/client-auth";
 import { formatDate } from "@/lib/format";
 import type { Ticket } from "@/lib/types";
 import { getStoredCommunityId } from "@/lib/community";
+import { getTicketSla } from "@/lib/tickets";
 
 export default function TicketDetailPage() {
   const params = useParams<{ id: string }>();
@@ -21,8 +22,10 @@ export default function TicketDetailPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [activityFilter, setActivityFilter] = useState("All");
 
   const canReopen = ticket?.status === "Resolved" || ticket?.status === "Closed";
+  const sla = ticket ? getTicketSla(ticket) : null;
 
   async function loadTicket() {
     setLoading(true);
@@ -135,7 +138,21 @@ export default function TicketDetailPage() {
               <Info label="Last updated" value={formatDate(ticket.updatedAt)} />
               <Info label="Responsible" value={ticket.ownerName || "Unassigned"} />
               <Info label="Residents affected" value={String(ticket.supporters?.length || 0)} />
+              <Info label="SLA due" value={sla ? formatDate(sla.dueAt) : "N/A"} />
+              <Info label="Estimated completion" value={ticket.estimatedCompletionAt || "Not set"} />
             </div>
+            {sla && (
+              <div className="mt-5 rounded-lg bg-[#F7F8FA] p-4">
+                <div className="flex justify-between text-sm font-bold">
+                  <span>SLA progress</span>
+                  <span className={sla.overdue ? "text-red-700" : "text-[#006B3C]"}>{sla.overdue ? "Overdue" : `${sla.hoursRemaining}h remaining`}</span>
+                </div>
+                <div className="mt-2 h-2 rounded-full bg-zinc-200">
+                  <div className={`h-2 rounded-full ${sla.overdue ? "bg-red-600" : "bg-[#C8A23A]"}`} style={{ width: `${sla.progress}%` }} />
+                </div>
+              </div>
+            )}
+            {ticket.resolutionNotes && <p className="mt-4 rounded-lg bg-emerald-50 p-4 text-sm text-emerald-800"><span className="font-bold">Resolution notes:</span> {ticket.resolutionNotes}</p>}
           </section>
 
           <section className="grid gap-6 xl:grid-cols-[1fr_360px]">
@@ -201,8 +218,13 @@ export default function TicketDetailPage() {
                   <TimerReset className="text-[#006B3C]" />
                   <h2 className="text-lg font-bold">Activity timeline</h2>
                 </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {["All", "status", "comment", "admin-note", "reopened"].map((item) => (
+                    <button key={item} onClick={() => setActivityFilter(item)} className={`rounded-lg px-3 py-1.5 text-xs font-bold ${activityFilter === item ? "bg-[#006B3C] text-white" : "bg-[#F7F8FA] text-zinc-700"}`}>{item}</button>
+                  ))}
+                </div>
                 <div className="mt-5 space-y-4">
-                  {[...ticket.timeline].reverse().map((item) => (
+                  {[...ticket.timeline].filter((item) => activityFilter === "All" || item.type === activityFilter).reverse().map((item) => (
                     <div key={item.id} className="border-l-2 border-[#C8A23A]/40 pl-4">
                       <p className="text-sm font-bold">{item.message}</p>
                       <p className="mt-1 text-xs text-zinc-500">{item.actor} / {formatDate(item.createdAt)}</p>

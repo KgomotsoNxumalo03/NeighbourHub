@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { Star, ThumbsUp } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Select } from "@/components/ui";
@@ -69,7 +70,7 @@ export default function BusinessesPage() {
               <div className="flex justify-between gap-3">
                 <div>
                   <span className="rounded-full bg-[#C8A23A]/15 px-2 py-1 text-xs font-bold text-[#7A5C08]">{business.category}</span>
-                  <h2 className="mt-3 text-lg font-bold">{business.name}</h2>
+                  <Link href={`/businesses/${business.id}`} className="mt-3 block text-lg font-bold text-[#006B3C] hover:underline">{business.name}</Link>
                 </div>
                 <span className="flex items-center gap-1 text-sm font-bold text-[#006B3C]"><Star size={16} />{business.rating || "New"}</span>
               </div>

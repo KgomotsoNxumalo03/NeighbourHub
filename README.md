@@ -63,6 +63,21 @@ estate123
 
 ## Current Features
 
+- Version 4.5 usable product refinements:
+  - Ticket SLA timers by priority, overdue indicators, progress bars, estimated completion dates, and resolution notes
+  - Ticket activity filters for status changes, comments, admin notes, and reopened activity
+  - Expanded admin reports with tickets by status, category, priority, opened vs resolved, overdue tickets, most reported areas, average resolution time, and recent admin activity
+  - Notifications grouped by Today, Yesterday, and Earlier with filters for unread, emergency, tickets, events, and announcements
+  - Resident profile page at `/profile` with editable directory visibility, area, contact preference, and contribution stats
+  - Business detail pages at `/businesses/[id]` with contact information, services, hours, photo placeholders, recommendation counts, and resident recommendations
+  - Community insights page at `/insights` with simple automatically generated operational insights
+  - Improved global search with grouped results, local recent searches, and better empty-state suggestions
+- Version 4.0 professional application refinements:
+  - Command-centre dashboard with operational snapshot and map preview
+  - Community-scoped global search across tickets, announcements, feed, events, businesses, lost/found, polls, and gallery
+  - Unified design-system primitives for selects, cards, empty states, and loading states
+  - Consistent dropdown experience across the application
+  - Shell notification count and stronger community context
 - Version 3.0 operations platform features:
   - Interactive map placeholder at `/map`
   - Security centre at `/security`
@@ -147,8 +162,10 @@ src/
     gallery/
     groups/
     businesses/
+    insights/
     map/
     polls/
+    profile/
     security/
     lost-found/
     notifications/
@@ -184,11 +201,11 @@ Future modules are shown as Coming Soon based on community type, without buildin
 
 ## Next Planned Features
 
+- Recommended next step: migrate JSON storage to SQLite or Postgres while preserving the current community-scoped data model
 - Replace map placeholder with Leaflet or Google Maps
 - Add true file uploads for gallery and tickets
 - Add service worker offline caching beyond the manifest/offline fallback foundation
 - Replace demo local auth with secure server-side sessions
-- Move JSON storage to SQLite
 - Add database-backed community scoping and audit logs
 - Expand Super Admin tools beyond demo switching
 - Build visitor, document, facility, wellness, and maintenance modules by community type

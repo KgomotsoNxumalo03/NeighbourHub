@@ -48,6 +48,8 @@ export function normalizeTickets(tickets: Ticket[]) {
       imagePreview: ticket.imagePreview || ticket.imageName || "",
       ownerName: ticket.ownerName || "Unassigned",
       supporters: ticket.supporters || [],
+      estimatedCompletionAt: ticket.estimatedCompletionAt || "",
+      resolutionNotes: ticket.resolutionNotes || "",
       adminNotes: ticket.adminNotes || "",
       adminNotesHistory: ticket.adminNotesHistory || [],
       comments: ticket.comments || [],
@@ -82,5 +84,32 @@ export function sortTickets(tickets: Ticket[], sortBy: string) {
 }
 
 export function isOpenStatus(status: Ticket["status"]) {
-  return ["New", "Open", "In Progress"].includes(status);
+  return ["New", "Acknowledged", "Assigned", "Open", "In Progress", "Waiting on Resident", "Waiting on Contractor", "Reopened"].includes(status);
+}
+
+export function slaHoursForPriority(priority: Ticket["priority"]) {
+  if (priority === "Emergency") return 2;
+  if (priority === "High") return 24;
+  if (priority === "Medium") return 72;
+  return 168;
+}
+
+export function getTicketSla(ticket: Ticket) {
+  const dueAt = new Date(Date.parse(ticket.createdAt) + slaHoursForPriority(ticket.priority) * 60 * 60 * 1000);
+  const now = Date.now();
+  const elapsed = Math.max(0, now - Date.parse(ticket.createdAt));
+  const total = Math.max(1, dueAt.getTime() - Date.parse(ticket.createdAt));
+  const progress = Math.min(100, Math.round((elapsed / total) * 100));
+  const terminal = ticket.status === "Resolved" || ticket.status === "Closed";
+
+  return {
+    dueAt: dueAt.toISOString(),
+    progress: terminal ? 100 : progress,
+    overdue: !terminal && now > dueAt.getTime(),
+    hoursRemaining: Math.ceil((dueAt.getTime() - now) / 3600000),
+  };
+}
+
+export function areaFromLocation(location: string) {
+  return location.split(",")[0]?.trim() || location.trim() || "Unspecified";
 }

@@ -59,10 +59,12 @@ export default function DashboardPage() {
   return (
     <AppShell allowedRoles={["resident"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-lg bg-[#006B3C] p-6 text-white shadow-lg shadow-emerald-900/10">
+        <section className="overflow-hidden rounded-lg bg-[#006B3C] text-white shadow-lg shadow-emerald-900/10">
+          <div className="grid gap-0 lg:grid-cols-[1fr_340px]">
+            <div className="p-6">
           <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
             <div>
-              <p className="text-sm font-semibold text-white/75">Resident dashboard</p>
+              <p className="text-sm font-semibold text-white/75">Community command centre</p>
               <div className="mt-2 flex items-center gap-3">
                 <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/15 text-sm font-bold">{community?.logo || "NH"}</span>
                 <div>
@@ -71,7 +73,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-white/80">
-                Report issues, follow updates, and keep track of what is happening around Oakridge Estate.
+                Live operations, resident activity, safety signals, and community updates for {community?.name || "your community"}.
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -83,6 +85,17 @@ export default function DashboardPage() {
                 <PlusCircle size={18} />
                 Log a ticket
               </Link>
+            </div>
+          </div>
+            </div>
+            <div className="border-t border-white/10 bg-white/10 p-6 lg:border-l lg:border-t-0">
+              <p className="text-sm font-bold text-white/80">Today&apos;s snapshot</p>
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <MiniMetric label="Open" value={openTickets.length} />
+                <MiniMetric label="Markers" value={markers.length} />
+                <MiniMetric label="Polls" value={activePolls.length} />
+                <MiniMetric label="Unread" value={unreadCount} />
+              </div>
             </div>
           </div>
         </section>
@@ -109,6 +122,33 @@ export default function DashboardPage() {
           <DashboardStat title="Emergency" value={emergencyTickets.length} icon={Siren} tone="red" />
           <DashboardStat title="Residents affected" value={residentsAffected} icon={CheckCircle2} tone="gold" />
           <DashboardStat title="Unread notifications" value={unreadCount} icon={ShieldCheck} tone="neutral" />
+        </section>
+
+        <section className="grid gap-4 lg:grid-cols-[1.4fr_0.8fr_0.8fr]">
+          <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold">Operations map preview</h2>
+              <Link href="/map" className="text-sm font-bold text-[#006B3C]">Open map</Link>
+            </div>
+            <div className="relative mt-4 h-56 overflow-hidden rounded-lg bg-[#F7F8FA]">
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,#e4e7eb_1px,transparent_1px),linear-gradient(#e4e7eb_1px,transparent_1px)] bg-[size:34px_34px]" />
+              {markers.slice(0, 10).map((marker) => (
+                <span key={marker.id} className={`absolute h-3 w-3 rounded-full ring-4 ring-white ${marker.type === "Emergency" ? "bg-red-600" : marker.type === "Event" ? "bg-[#C8A23A]" : "bg-[#006B3C]"}`} style={{ left: `${marker.x}%`, top: `${marker.y}%` }} />
+              ))}
+            </div>
+          </div>
+          <DashboardPanel title="Security posture" href="/security">
+            <div className="rounded-lg bg-red-50 p-4 text-red-900">
+              <p className="text-3xl font-bold">{securitySummary}</p>
+              <p className="mt-1 text-sm">Security-related items</p>
+            </div>
+          </DashboardPanel>
+          <DashboardPanel title="Engagement" href="/polls">
+            <div className="rounded-lg bg-[#C8A23A]/10 p-4">
+              <p className="text-3xl font-bold">{activePolls.length + feedPosts.length}</p>
+              <p className="mt-1 text-sm text-zinc-600">Active polls and feed posts</p>
+            </div>
+          </DashboardPanel>
         </section>
 
         {emergencyTickets.length > 0 && (
@@ -249,6 +289,15 @@ export default function DashboardPage() {
         </section>
       </div>
     </AppShell>
+  );
+}
+
+function MiniMetric({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="rounded-lg bg-white/10 p-3">
+      <p className="text-2xl font-bold">{value}</p>
+      <p className="text-xs font-semibold text-white/70">{label}</p>
+    </div>
   );
 }
 
