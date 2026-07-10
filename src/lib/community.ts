@@ -20,6 +20,10 @@ export function setStoredCommunityId(communityId: string) {
   if (typeof window !== "undefined") window.localStorage.setItem(activeCommunityKey, communityId);
 }
 
+export function clearStoredCommunityId() {
+  if (typeof window !== "undefined") window.localStorage.removeItem(activeCommunityKey);
+}
+
 export function getCurrentCommunity(communities: Community[], user: PublicUser | null) {
   const communityId = getStoredCommunityId(user);
   return communities.find((community) => community.id === communityId) || communities[0] || null;

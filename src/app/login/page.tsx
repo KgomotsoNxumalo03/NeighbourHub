@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { LogIn, MapPin } from "lucide-react";
-import { getCurrentUser, saveCurrentUser } from "@/lib/client-auth";
+import { saveCurrentUser } from "@/lib/client-auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,8 +14,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const user = getCurrentUser();
-    if (user) router.replace(user.role === "admin" || user.role === "super-admin" ? "/admin" : "/dashboard");
+    fetch("/api/auth/session")
+      .then((res) => res.json())
+      .then((data) => {
+        const user = data.session?.user;
+        if (user) router.replace(user.role === "admin" || user.role === "super-admin" ? "/admin" : "/dashboard");
+      })
+      .catch(() => undefined);
   }, [router]);
 
   function fillDemo(role: "resident" | "admin") {

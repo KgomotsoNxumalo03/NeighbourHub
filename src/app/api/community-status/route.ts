@@ -1,21 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readData, writeData } from "@/lib/data-store";
 import { communityStatusLevels } from "@/lib/constants";
-import { normalizeCommunityStatus } from "@/lib/community-status";
+import { prisma } from "@/lib/prisma";
+import { getSessionFromRequest } from "@/lib/session";
+import { toAppCommunityStatusLevel, toDbCommunityStatusLevel } from "@/lib/db-maps";
 
 export async function GET(request: NextRequest) {
-  const communityId = new URL(request.url).searchParams.get("communityId");
-  const normalized = normalizeCommunityStatus(await readData("communityStatus"));
-  if (normalized.changed) await writeData("communityStatus", normalized.communityStatus);
-  return NextResponse.json({ communityStatus: communityId ? normalized.communityStatus.filter((item) => item.communityId === communityId) : normalized.communityStatus });
+  const session = await getSessionFromRequest(request);
+  if (!session) {
+    return NextResponse.json({ message: "Authentication required." }, { status: 401 });
+  }
+
+  const communityStatus = await prisma.communityStatus.findMany({
+    where: { communityId: session.activeCommunityId },
+    orderBy: { name: "asc" },
+  });
+
+  return NextResponse.json({
+    communityStatus: communityStatus.map((item) => ({
+      ...item,
+      level: toAppCommunityStatusLevel(item.level),
+      createdAt: item.createdAt.toISOString(),
+      updatedAt: item.updatedAt.toISOString(),
+    })),
+  });
 }
 
 export async function PATCH(request: NextRequest) {
-  const { id, level, status, detail } = await request.json();
-  const normalized = normalizeCommunityStatus(await readData("communityStatus"));
-  const item = normalized.communityStatus.find((entry) => entry.id === id);
+  const session = await getSessionFromRequest(request);
+  if (!session) {
+    return NextResponse.json({ message: "Authentication required." }, { status: 401 });
+  }
 
-  if (!item) {
+  if (session.user.role !== "admin" && session.user.role !== "super-admin") {
+    return NextResponse.json({ message: "Only admins can update community status." }, { status: 403 });
+  }
+
+  const { id, level, status, detail } = await request.json();
+  const item = await prisma.communityStatus.findUnique({ where: { id } });
+
+  if (!item || item.communityId !== session.activeCommunityId) {
     return NextResponse.json({ message: "Community status not found." }, { status: 404 });
   }
 
@@ -23,24 +46,33 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ message: "Invalid status level." }, { status: 400 });
   }
 
-  item.level = level || item.level;
-  item.status = String(status || item.status).trim();
-  item.detail = String(detail || item.detail).trim();
-  item.updatedAt = new Date().toISOString();
-
-  await writeData("communityStatus", normalized.communityStatus);
-  const notifications = await readData("notifications");
-  notifications.push({
-    id: crypto.randomUUID(),
-    communityId: item.communityId,
-    userId: "all",
-    type: "Community status change",
-    title: `${item.name} status updated`,
-    body: `${item.status}: ${item.detail}`,
-    readBy: [],
-    href: "/dashboard",
-    createdAt: item.updatedAt,
+  const updated = await prisma.communityStatus.update({
+    where: { id: item.id },
+    data: {
+      level: level ? toDbCommunityStatusLevel(level) : item.level,
+      status: String(status || item.status).trim(),
+      detail: String(detail || item.detail).trim(),
+    },
   });
-  await writeData("notifications", notifications);
-  return NextResponse.json({ communityStatus: item });
+
+  await prisma.notification.create({
+    data: {
+      id: crypto.randomUUID(),
+      communityId: updated.communityId,
+      userId: "all",
+      type: "COMMUNITY_STATUS_CHANGE",
+      title: `${updated.name} status updated`,
+      body: `${updated.status}: ${updated.detail}`,
+      href: "/dashboard",
+    },
+  });
+
+  return NextResponse.json({
+    communityStatus: {
+      ...updated,
+      level: toAppCommunityStatusLevel(updated.level),
+      createdAt: updated.createdAt.toISOString(),
+      updatedAt: updated.updatedAt.toISOString(),
+    },
+  });
 }

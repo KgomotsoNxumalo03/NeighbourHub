@@ -24,13 +24,14 @@ import {
   BarChart3,
   ShieldCheck,
 } from "lucide-react";
-import { clearCurrentUser, getCurrentUser } from "@/lib/client-auth";
+import { clearCurrentUser } from "@/lib/client-auth";
 import type { Community, PublicUser, Role } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { communityModulePlaceholders } from "@/lib/constants";
-import { getCurrentCommunity, getStoredCommunityId, setStoredCommunityId } from "@/lib/community";
+import { clearStoredCommunityId, getCurrentCommunity, getStoredCommunityId, setStoredCommunityId } from "@/lib/community";
 import { Select } from "@/components/ui";
 import { GlobalSearch } from "@/components/GlobalSearch";
+import { saveCurrentUser } from "@/lib/client-auth";
 
 const residentLinks = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -89,32 +90,58 @@ export function AppShell({
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const activeUser = getCurrentUser();
-    if (!activeUser) {
-      router.replace("/login");
-      return;
+    let cancelled = false;
+
+    async function loadSession() {
+      const response = await fetch("/api/auth/session");
+      const data = await response.json();
+      const activeUser = data.session?.user as PublicUser | undefined;
+
+      if (!activeUser) {
+        clearCurrentUser();
+        clearStoredCommunityId();
+        if (!cancelled) router.replace("/login");
+        return;
+      }
+
+      const superAdminAllowed = activeUser.role === "super-admin" && allowedRoles.includes("admin");
+      if (!allowedRoles.includes(activeUser.role) && !superAdminAllowed) {
+        if (!cancelled) router.replace(activeUser.role === "admin" ? "/admin" : "/dashboard");
+        return;
+      }
+
+      saveCurrentUser(activeUser);
+      setUser(activeUser);
+      setActiveCommunityId(data.session.activeCommunityId || activeUser.communityId);
+      setStoredCommunityId(data.session.activeCommunityId || activeUser.communityId);
+
+      const [communitiesResponse, notificationsResponse] = await Promise.all([
+        fetch("/api/communities"),
+        fetch("/api/notifications"),
+      ]);
+      const communitiesData = await communitiesResponse.json();
+      const notificationsData = await notificationsResponse.json();
+
+      if (cancelled) return;
+
+      setCommunities(communitiesData.communities || []);
+      setUnreadCount((notificationsData.notifications || []).filter((item: { readBy: string[] }) => !item.readBy.includes(activeUser.id)).length);
+      setReady(true);
     }
 
-    const superAdminAllowed = activeUser.role === "super-admin" && allowedRoles.includes("admin");
-    if (!allowedRoles.includes(activeUser.role) && !superAdminAllowed) {
-      router.replace(activeUser.role === "admin" ? "/admin" : "/dashboard");
-      return;
-    }
+    loadSession();
 
-    setUser(activeUser);
-    setActiveCommunityId(getStoredCommunityId(activeUser));
-    fetch("/api/communities").then((res) => res.json()).then((data) => setCommunities(data.communities || []));
-    const communityId = getStoredCommunityId(activeUser);
-    fetch(`/api/notifications?userId=${activeUser.id}&communityId=${communityId}`).then((res) => res.json()).then((data) => {
-      setUnreadCount((data.notifications || []).filter((item: { readBy: string[] }) => !item.readBy.includes(activeUser.id)).length);
-    });
-    setReady(true);
+    return () => {
+      cancelled = true;
+    };
   }, [allowedRoles, router]);
 
-  function logout() {
+  async function logout() {
     if (!window.confirm("Sign out of NeighbourHub?")) return;
+    await fetch("/api/auth/session", { method: "DELETE" }).catch(() => undefined);
     clearCurrentUser();
-    router.replace("/");
+    clearStoredCommunityId();
+    router.replace("/login");
   }
 
   if (!ready || !user) {
@@ -132,7 +159,12 @@ export function AppShell({
   const links = isAdminLike ? adminLinks : residentLinks;
   const comingSoon = activeCommunity ? communityModulePlaceholders[activeCommunity.communityType] : [];
 
-  function switchCommunity(communityId: string) {
+  async function switchCommunity(communityId: string) {
+    await fetch("/api/auth/session", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ activeCommunityId: communityId }),
+    }).catch(() => undefined);
     setStoredCommunityId(communityId);
     setActiveCommunityId(communityId);
     window.location.reload();

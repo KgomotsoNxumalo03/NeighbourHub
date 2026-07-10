@@ -1,21 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readData, writeData } from "@/lib/data-store";
+import { prisma } from "@/lib/prisma";
+import { getSessionFromRequest } from "@/lib/session";
 
 export async function GET(request: NextRequest) {
-  const communityId = new URL(request.url).searchParams.get("communityId");
-  const contacts = await readData("contacts");
-  return NextResponse.json({ contacts: communityId ? contacts.filter((item) => item.communityId === communityId) : contacts });
+  const session = await getSessionFromRequest(request);
+  if (!session) {
+    return NextResponse.json({ message: "Authentication required." }, { status: 401 });
+  }
+
+  const contacts = await prisma.emergencyContact.findMany({
+    where: { communityId: session.activeCommunityId },
+    orderBy: { name: "asc" },
+  });
+
+  return NextResponse.json({ contacts });
 }
 
 export async function PATCH(request: NextRequest) {
-  const { id, name, phone, detail } = await request.json();
-  const contacts = await readData("contacts");
-  const contact = contacts.find((item) => item.id === id);
-  if (!contact) return NextResponse.json({ message: "Contact not found." }, { status: 404 });
+  const session = await getSessionFromRequest(request);
+  if (!session) {
+    return NextResponse.json({ message: "Authentication required." }, { status: 401 });
+  }
 
-  contact.name = String(name || contact.name).trim();
-  contact.phone = String(phone || contact.phone).trim();
-  contact.detail = String(detail || contact.detail).trim();
-  await writeData("contacts", contacts);
-  return NextResponse.json({ contact });
+  if (session.user.role !== "admin" && session.user.role !== "super-admin") {
+    return NextResponse.json({ message: "Only admins can update contacts." }, { status: 403 });
+  }
+
+  const { id, name, phone, detail } = await request.json();
+  const contact = await prisma.emergencyContact.findUnique({ where: { id } });
+
+  if (!contact || contact.communityId !== session.activeCommunityId) {
+    return NextResponse.json({ message: "Contact not found." }, { status: 404 });
+  }
+
+  const updated = await prisma.emergencyContact.update({
+    where: { id },
+    data: {
+      name: String(name || contact.name).trim(),
+      phone: String(phone || contact.phone).trim(),
+      detail: String(detail || contact.detail).trim(),
+    },
+  });
+
+  return NextResponse.json({ contact: updated });
 }

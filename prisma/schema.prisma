@@ -1,0 +1,592 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum CommunityType {
+  GENERAL_NEIGHBOURHOOD
+  RESIDENTIAL_ESTATE
+  GATED_COMMUNITY
+  APARTMENT_COMPLEX
+  TOWNHOUSE_COMPLEX
+  RETIREMENT_VILLAGE
+}
+
+enum UserRole {
+  RESIDENT
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  EMERGENCY
+}
+
+enum TicketStatus {
+  NEW
+  ACKNOWLEDGED
+  ASSIGNED
+  OPEN
+  IN_PROGRESS
+  WAITING_ON_RESIDENT
+  WAITING_ON_CONTRACTOR
+  RESOLVED
+  CLOSED
+  REOPENED
+}
+
+enum AnnouncementPriority {
+  NORMAL
+  IMPORTANT
+  EMERGENCY
+}
+
+enum CommunityStatusLevel {
+  NORMAL
+  WARNING
+  CRITICAL
+}
+
+enum PollStatus {
+  ACTIVE
+  CLOSED
+}
+
+enum LostFoundStatus {
+  OPEN
+  CLAIMED
+  RESOLVED
+}
+
+enum TicketActivityType {
+  CREATED
+  STATUS
+  COMMENT
+  ADMIN_NOTE
+  REOPENED
+}
+
+enum NotificationType {
+  EMERGENCY_ANNOUNCEMENT
+  TICKET_STATUS_UPDATE
+  ADMIN_COMMENT
+  UPCOMING_EVENT
+  COMMUNITY_STATUS_CHANGE
+}
+
+model Community {
+  id              String             @id
+  name            String
+  communityType   CommunityType
+  suburb          String
+  city            String
+  province        String
+  postalCode      String
+  logo            String
+  coverImage      String
+  primaryColour   String
+  description     String
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  deletedAt       DateTime?
+  users           User[]
+  residentProfiles ResidentProfile[]
+  tickets         Ticket[]
+  announcements   Announcement[]
+  communityStatus CommunityStatus[]
+  emergencyContacts EmergencyContact[]
+  feedPosts       FeedPost[]
+  events          Event[]
+  lostFoundReports LostFoundReport[]
+  notifications   Notification[]
+  businesses      Business[]
+  polls           Poll[]
+  volunteerGroups VolunteerGroup[]
+  galleryItems    GalleryItem[]
+  sessions        Session[]          @relation("ActiveCommunitySessions")
+  auditLogs       AuditLog[]
+  uploads         UploadAsset[]
+
+  @@index([communityType])
+  @@index([updatedAt])
+}
+
+model User {
+  id                 String                @id
+  communityId        String
+  community          Community             @relation(fields: [communityId], references: [id], onDelete: Restrict)
+  name               String
+  email              String                @unique
+  passwordHash       String
+  role               UserRole
+  address            String?
+  createdAt          DateTime
+  updatedAt          DateTime              @updatedAt
+  deletedAt          DateTime?
+  sessions           Session[]
+  residentProfile    ResidentProfile?
+  ticketComments     TicketComment[]
+  feedPosts          FeedPost[]
+  feedComments       FeedComment[]
+  feedLikes          FeedLike[]
+  eventRsvps         EventRsvp[]
+  pollVotes          PollVote[]
+  businessRecommendations BusinessRecommendation[]
+  groupMemberships   GroupMembership[]
+  notificationReads  NotificationRead[]
+  auditLogs          AuditLog[]            @relation("AuditLogUser")
+  loginAttempts      LoginAttempt[]
+  ticketSupports     TicketSupport[]
+  ticketCreated      Ticket[]              @relation("TicketCreatedBy")
+  lostFoundReports   LostFoundReport[]
+  uploads            UploadAsset[]
+
+  @@index([communityId])
+  @@index([role])
+}
+
+model ResidentProfile {
+  userId            String   @id
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  communityId       String
+  community         Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  name              String
+  visible           Boolean   @default(false)
+  area              String
+  contactPreference String
+  updatedAt         DateTime
+
+  @@index([communityId])
+}
+
+model Session {
+  id                 String    @id
+  token              String    @unique
+  userId             String
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activeCommunityId  String?
+  activeCommunity    Community? @relation("ActiveCommunitySessions", fields: [activeCommunityId], references: [id], onDelete: SetNull)
+  expiresAt          DateTime
+  createdAt          DateTime  @default(now())
+  lastSeenAt         DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model LoginAttempt {
+  id        String   @id
+  email     String
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  ipAddress String?
+  success   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email, createdAt])
+}
+
+model Ticket {
+  id                    String          @id
+  communityId           String
+  community             Community       @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  reference             String
+  userId                String
+  user                  User            @relation("TicketCreatedBy", fields: [userId], references: [id], onDelete: Cascade)
+  residentName          String
+  title                 String
+  description           String
+  category              String
+  priority              TicketPriority
+  location              String
+  imageName             String          @default("")
+  imagePreview          String          @default("")
+  status                TicketStatus    @default(NEW)
+  ownerName             String          @default("Unassigned")
+  estimatedCompletionAt DateTime?
+  resolutionNotes       String          @default("")
+  adminNotes            String          @default("")
+  deletedAt             DateTime?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  comments              TicketComment[]
+  activities            TicketActivity[]
+  supports              TicketSupport[]
+  adminNotesHistory     TicketAdminNote[]
+
+  @@unique([communityId, reference])
+  @@index([communityId, createdAt])
+  @@index([communityId, status])
+  @@index([communityId, priority])
+  @@index([userId])
+}
+
+model TicketComment {
+  id          String   @id
+  ticketId    String
+  ticket       Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorId    String?
+  author      User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorName  String
+  authorRole  UserRole
+  body        String
+  createdAt   DateTime @default(now())
+
+  @@index([ticketId, createdAt])
+}
+
+model TicketActivity {
+  id        String           @id
+  ticketId  String
+  ticket    Ticket           @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  type      TicketActivityType
+  message   String
+  actor     String
+  createdAt DateTime         @default(now())
+
+  @@index([ticketId, createdAt])
+}
+
+model TicketSupport {
+  id        String   @id
+  ticketId  String
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([ticketId, userId])
+  @@index([ticketId])
+}
+
+model TicketAdminNote {
+  id        String   @id
+  ticketId  String
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  note      String
+  actor     String
+  createdAt DateTime @default(now())
+
+  @@index([ticketId, createdAt])
+}
+
+model Announcement {
+  id          String               @id
+  communityId String
+  community   Community            @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  title       String
+  body        String
+  audience    String
+  priority    AnnouncementPriority @default(NORMAL)
+  expiresAt   DateTime
+  deletedAt   DateTime?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@index([communityId, createdAt])
+}
+
+model CommunityStatus {
+  id          String               @id
+  communityId String
+  community   Community            @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  name        String
+  level       CommunityStatusLevel @default(NORMAL)
+  status      String
+  detail      String
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@unique([communityId, name])
+  @@index([communityId])
+}
+
+model EmergencyContact {
+  id          String   @id
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  name        String
+  phone       String
+  detail      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([communityId])
+}
+
+model FeedPost {
+  id          String     @id
+  communityId String
+  community   Community  @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  type        String
+  title       String
+  body        String
+  authorId    String?
+  author      User?      @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorName  String
+  authorRole  UserRole
+  pinned      Boolean    @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  comments    FeedComment[]
+  likes       FeedLike[]
+
+  @@index([communityId, createdAt])
+}
+
+model FeedComment {
+  id          String   @id
+  postId      String
+  post        FeedPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId    String?
+  author      User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorName  String
+  body        String
+  createdAt   DateTime @default(now())
+
+  @@index([postId, createdAt])
+}
+
+model FeedLike {
+  id        String   @id
+  postId    String
+  post      FeedPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+}
+
+model Event {
+  id          String   @id
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  date        String
+  time        String
+  location    String
+  category    String
+  createdBy   String?
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  rsvps       EventRsvp[]
+
+  @@index([communityId, createdAt])
+}
+
+model EventRsvp {
+  id        String   @id
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([eventId, userId])
+}
+
+model LostFoundReport {
+  id               String            @id
+  communityId      String
+  community        Community         @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  type             String
+  title            String
+  description      String
+  location         String
+  imageName        String            @default("")
+  contactPreference String
+  status           LostFoundStatus   @default(OPEN)
+  reporterId       String?
+  reporter         User?             @relation(fields: [reporterId], references: [id], onDelete: SetNull)
+  reporterName     String
+  deletedAt        DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([communityId, createdAt])
+}
+
+model Notification {
+  id          String           @id
+  communityId String
+  community   Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  userId      String
+  type        NotificationType
+  title       String
+  body        String
+  href        String
+  createdAt   DateTime         @default(now())
+  reads       NotificationRead[]
+
+  @@index([communityId, createdAt])
+  @@index([userId, communityId])
+}
+
+model NotificationRead {
+  id             String       @id
+  notificationId String
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  @@unique([notificationId, userId])
+}
+
+model Business {
+  id          String   @id
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  name        String
+  category    String
+  description String
+  contact     String
+  area        String
+  rating      Float    @default(0)
+  approved    Boolean   @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  recommendations BusinessRecommendation[]
+
+  @@index([communityId, approved])
+}
+
+model BusinessRecommendation {
+  id         String   @id
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([businessId, userId])
+}
+
+model Poll {
+  id          String     @id
+  communityId String
+  community   Community  @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  question    String
+  status      PollStatus @default(ACTIVE)
+  createdBy   String
+  deletedAt   DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  options     PollOption[]
+  votes       PollVote[]
+
+  @@index([communityId, createdAt])
+}
+
+model PollOption {
+  id         String   @id
+  pollId     String
+  poll       Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  label      String
+  sortOrder  Int
+  createdAt  DateTime @default(now())
+  votes      PollVote[]
+
+  @@index([pollId])
+}
+
+model PollVote {
+  id            String   @id
+  pollId        String
+  poll          Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  pollOptionId  String
+  pollOption    PollOption @relation(fields: [pollOptionId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+
+  @@unique([pollId, userId])
+  @@index([pollOptionId])
+}
+
+model VolunteerGroup {
+  id            String   @id
+  communityId   String
+  community     Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  name          String
+  description   String
+  upcomingActivity String
+  deletedAt     DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  members       GroupMembership[]
+
+  @@index([communityId])
+}
+
+model GroupMembership {
+  id        String          @id
+  groupId   String
+  group     VolunteerGroup  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime        @default(now())
+
+  @@unique([groupId, userId])
+}
+
+model GalleryItem {
+  id          String   @id
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  title       String
+  category    String
+  imageName   String
+  description String
+  uploadedBy  String
+  deletedAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([communityId, createdAt])
+}
+
+model AuditLog {
+  id         String   @id
+  userId     String?
+  user       User?    @relation("AuditLogUser", fields: [userId], references: [id], onDelete: SetNull)
+  communityId String?
+  community  Community? @relation(fields: [communityId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String
+  entityId   String?
+  details    String?
+  createdAt  DateTime @default(now())
+
+  @@index([communityId, createdAt])
+  @@index([userId, createdAt])
+}
+
+model UploadAsset {
+  id            String    @id
+  communityId   String?
+  community     Community? @relation(fields: [communityId], references: [id], onDelete: SetNull)
+  userId        String?
+  user          User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  entityType    String
+  entityId      String?
+  kind          String
+  originalName  String
+  fileName      String
+  mimeType      String
+  size          Int
+  createdAt     DateTime  @default(now())
+
+  @@index([communityId, createdAt])
+}

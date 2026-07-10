@@ -1,25 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readData, writeData } from "@/lib/data-store";
+import { prisma } from "@/lib/prisma";
+import { getSessionFromRequest } from "@/lib/session";
+import { toAppCommunityType } from "@/lib/db-maps";
 
 export async function GET() {
-  const communities = await readData("communities");
-  return NextResponse.json({ communities });
+  const communities = await prisma.community.findMany({
+    where: { deletedAt: null },
+    orderBy: { createdAt: "asc" },
+  });
+
+  return NextResponse.json({
+    communities: communities.map((community) => ({
+      ...community,
+      communityType: toAppCommunityType(community.communityType),
+      createdAt: community.createdAt.toISOString(),
+      updatedAt: community.updatedAt.toISOString(),
+    })),
+  });
 }
 
 export async function PATCH(request: NextRequest) {
-  const { id, name, logo, coverImage, description, primaryColour } = await request.json();
-  const communities = await readData("communities");
-  const community = communities.find((item) => item.id === id);
+  const session = await getSessionFromRequest(request);
+  if (!session) {
+    return NextResponse.json({ message: "Authentication required." }, { status: 401 });
+  }
 
-  if (!community) return NextResponse.json({ message: "Community not found." }, { status: 404 });
+  if (session.user.role !== "admin" && session.user.role !== "super-admin") {
+    return NextResponse.json({ message: "Only admins can update community settings." }, { status: 403 });
+  }
 
-  community.name = String(name || community.name).trim();
-  community.logo = String(logo || community.logo).trim();
-  community.coverImage = String(coverImage || community.coverImage).trim();
-  community.description = String(description || community.description).trim();
-  community.primaryColour = String(primaryColour || community.primaryColour).trim();
-  community.updatedAt = new Date().toISOString();
+  const { name, logo, coverImage, description, primaryColour } = await request.json();
+  const communityId = session.activeCommunityId;
 
-  await writeData("communities", communities);
-  return NextResponse.json({ community });
+  const community = await prisma.community.findUnique({ where: { id: communityId } });
+  if (!community) {
+    return NextResponse.json({ message: "Community not found." }, { status: 404 });
+  }
+
+  const updated = await prisma.community.update({
+    where: { id: community.id },
+    data: {
+      name: String(name || community.name).trim(),
+      logo: String(logo || community.logo).trim(),
+      coverImage: String(coverImage || community.coverImage).trim(),
+      description: String(description || community.description).trim(),
+      primaryColour: String(primaryColour || community.primaryColour).trim(),
+    },
+  });
+
+  return NextResponse.json({
+    community: {
+      ...updated,
+      communityType: toAppCommunityType(updated.communityType),
+      createdAt: updated.createdAt.toISOString(),
+      updatedAt: updated.updatedAt.toISOString(),
+    },
+  });
 }

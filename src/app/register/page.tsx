@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { MapPin, UserPlus } from "lucide-react";
-import { getCurrentUser, saveCurrentUser } from "@/lib/client-auth";
+import { saveCurrentUser } from "@/lib/client-auth";
 import type { Community, ResidentAddress } from "@/lib/types";
 import { addressFieldsForType } from "@/lib/community";
 import { Select } from "@/components/ui";
@@ -21,8 +21,13 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const user = getCurrentUser();
-    if (user) router.replace(user.role === "admin" || user.role === "super-admin" ? "/admin" : "/dashboard");
+    fetch("/api/auth/session")
+      .then((res) => res.json())
+      .then((data) => {
+        const user = data.session?.user;
+        if (user) router.replace(user.role === "admin" || user.role === "super-admin" ? "/admin" : "/dashboard");
+      })
+      .catch(() => undefined);
     fetch("/api/communities").then((res) => res.json()).then((data) => setCommunities(data.communities || []));
   }, [router]);
 
