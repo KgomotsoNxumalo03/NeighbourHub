@@ -113,3 +113,18 @@ export function getTicketSla(ticket: Ticket) {
 export function areaFromLocation(location: string) {
   return location.split(",")[0]?.trim() || location.trim() || "Unspecified";
 }
+
+export function isUnassigned(ticket: Ticket) {
+  return isOpenStatus(ticket.status) && (!ticket.ownerName || ticket.ownerName === "Unassigned");
+}
+
+export function isMaintenanceOverdue(ticket: Ticket, now = Date.now()) {
+  return isOpenStatus(ticket.status) && Date.parse(ticket.dueAt || getTicketSla(ticket).dueAt) < now;
+}
+
+export function getResolutionTime(ticket: Ticket) {
+  if (isOpenStatus(ticket.status)) return null;
+  return ticket.resolvedAt || [...ticket.timeline].reverse().find((event) =>
+    event.type === "status" && / to (Resolved|Closed)$|^Resident confirmed resolution$/.test(event.message)
+  )?.createdAt || ticket.updatedAt;
+}

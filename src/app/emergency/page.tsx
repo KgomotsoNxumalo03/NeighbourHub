@@ -84,7 +84,7 @@ export default function EmergencyPage() {
           </div>
           <a href="tel:10111" className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-red-700">
             <PhoneCall size={18} />
-            Call emergency services
+            Call police
           </a>
         </div>
       </div>
@@ -92,7 +92,7 @@ export default function EmergencyPage() {
       <section className="grid gap-6 xl:grid-cols-[1fr_0.95fr]">
         <form onSubmit={submitEmergency} className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
           <h2 className="text-lg font-bold">Quick emergency ticket</h2>
-          <p className="mt-1 text-sm text-zinc-600">This creates an emergency-priority ticket visible to admins immediately.</p>
+          <p className="mt-1 text-sm text-zinc-600">If anyone is in immediate danger, call the appropriate emergency service or estate security using the numbers on this page. Submitting this form records a ticket for management.</p>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {emergencyTypes.map((type) => {

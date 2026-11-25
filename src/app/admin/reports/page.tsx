@@ -12,12 +12,14 @@ import { getStoredCommunityId } from "@/lib/community";
 
 type ReportRow = { label: string; count: number };
 type AdminActivity = TicketActivity & { ticketId: string; reference: string; title: string };
+type ReportTicket = Pick<Ticket, "id" | "reference" | "title" | "priority" | "status" | "location" | "residentName" | "ownerName">;
 type Reports = {
   byStatus: ReportRow[];
   byCategory: ReportRow[];
   byPriority: ReportRow[];
-  emergencyTickets: Ticket[];
-  overdueTickets: Ticket[];
+  emergencyTickets: ReportTicket[];
+  overdueTickets: ReportTicket[];
+  unassignedTickets: ReportTicket[];
   openedVsResolved: ReportRow[];
   mostReportedAreas: ReportRow[];
   averageResolutionHours: number | null;
@@ -38,8 +40,11 @@ export default function ReportsPage() {
       <div className="mb-6">
         <p className="text-sm font-semibold text-[#006B3C]">Operations overview</p>
         <h1 className="mt-1 text-3xl font-bold">Admin reports</h1>
-        <p className="mt-2 text-sm text-zinc-600">Simple neighbourhood reporting from local ticket data.</p>
+        <p className="mt-2 text-sm text-zinc-600">Review the maintenance backlog and resolution times.</p>
       </div>
+
+      <a href={`/api/reports?communityId=${encodeURIComponent(communityId)}&format=csv`} className="mb-2 inline-flex rounded-lg bg-[#006B3C] px-4 py-2 text-sm font-bold text-white">Download weekly maintenance CSV</a>
+      <p className="mb-6 text-sm text-zinc-600">Includes tickets opened or resolved in the last 7 days and the current overdue and unassigned backlog.</p>
 
       {!reports && <p className="rounded-lg border border-zinc-200 bg-white p-6 text-sm text-zinc-600">Loading reports...</p>}
 
@@ -48,11 +53,13 @@ export default function ReportsPage() {
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <Summary title="Emergency tickets" value={reports.emergencyTickets.length} icon={AlertTriangle} tone="red" />
             <Summary title="Overdue tickets" value={reports.overdueTickets.length} icon={Clock3} tone="red" />
-            <Summary title="Active categories" value={reports.byCategory.length} icon={Tags} tone="gold" />
-            <Summary title="Avg resolution" value={reports.averageResolutionHours === null ? "N/A" : `${reports.averageResolutionHours}h`} icon={Clock3} tone="neutral" />
+            <Summary title="Unassigned tickets" value={reports.unassignedTickets.length} icon={Tags} tone="gold" />
+            <Summary title="Avg resolution (7 days)" value={reports.averageResolutionHours === null ? "N/A" : `${reports.averageResolutionHours}h`} icon={Clock3} tone="neutral" />
           </section>
 
           <section className="grid gap-6 xl:grid-cols-2">
+            <TicketQueue title="Unassigned tickets" tickets={reports.unassignedTickets} />
+            <TicketQueue title="Overdue tickets" tickets={reports.overdueTickets} />
             <ReportCard title="Tickets by status" rows={reports.byStatus} />
             <ReportCard title="Tickets by category" rows={reports.byCategory} />
             <ReportCard title="Tickets by priority" rows={reports.byPriority} />
@@ -141,5 +148,24 @@ function ReportCard({ title, rows }: { title: string; rows: ReportRow[] }) {
         ))}
       </div>
     </div>
+  );
+}
+
+function TicketQueue({ title, tickets }: { title: string; tickets: ReportTicket[] }) {
+  return (
+    <section className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-bold">{title}</h2>
+      {tickets.length === 0 && <p className="mt-3 text-sm text-zinc-600">No tickets in this queue.</p>}
+      <ul className="mt-3 space-y-2">
+        {tickets.map((ticket) => (
+          <li key={ticket.id}>
+            <Link href={`/tickets/${ticket.id}`} className="block rounded-lg bg-[#F7F8FA] p-3 hover:bg-zinc-100">
+              <span className="text-sm font-bold">{ticket.reference} · {ticket.title}</span>
+              <span className="mt-1 block text-sm text-zinc-600">{ticket.location} · {ticket.ownerName}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

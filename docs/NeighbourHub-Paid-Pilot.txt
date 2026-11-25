@@ -1,0 +1,51 @@
+NEIGHBOURHUB PAID PILOT
+
+Start with three conversations
+
+Contact three estate managers, complex managers or trustees who oversee maintenance. Ask each for 20 minutes and run the same demo so you can compare what they say.
+
+Outreach message
+
+Hi [Name],
+
+I'm building NeighbourHub for residential estates and complexes. It lets residents report maintenance issues with a photo and gives the management team one place to assign work, follow up on overdue issues and review what was resolved.
+
+Would you have 20 minutes next week to show me how your team handles maintenance requests today? I can also walk you through a sample ticket so you can tell me where it would fit.
+
+Thanks,
+Kgomotso
+
+Discovery questions
+
+1. Walk me through the last maintenance issue that was hard to close. Where did it come in, who took ownership, and what held it up?
+2. How do you know which issues are overdue? What do you report to trustees or management each week?
+3. Who would use this daily, who approves a trial, and when would they decide?
+4. Which result would justify a recurring subscription after the trial?
+
+Demo with sample data
+
+A resident reports a leaking pipe with a photo and location. A manager assigns it to a staff member, sets a due date and adds an internal note. The manager marks it resolved with a note the resident can see. Show the resident's in-app updates and the manager's overdue queue and weekly CSV. Show announcements and emergency contacts briefly.
+
+Follow up with the best-fit property
+
+Offer a 30-day paid pilot for one property. Use R1,500 as a proposed trial quote to validate during discovery. Confirm the scope, fee, dates and payment terms in writing before accepting payment. Agree on one site lead and one NeighbourHub support contact. Include a joint onboarding call, a weekly review and a renewal decision on day 30. Schedule the start once the environment is ready to handle live resident data. Use sample records in discovery demos.
+
+Suggested pilot scorecard
+
+• Median time to assignment. Compare the previous month's available records with the pilot's ticket activity history.
+• Overdue backlog. Record the open overdue count at kickoff and at each weekly review.
+• Weekly usage. Ask the manager to bring the CSV to the review and record how many of the four reviews used it.
+• Renewal. Ask the buyer on day 30 whether they will renew and at what monthly price. Record the decision and what drove it.
+
+Pilot offer follow-up
+
+Hi [Name],
+
+Thanks for showing me how maintenance requests move through [Property]. You mentioned that [specific problem from discovery]. I'd like to test whether NeighbourHub can improve that in a 30-day pilot at your property.
+
+The proposed pilot fee is R1,500. It includes onboarding for your management team, a weekly maintenance review and a closeout meeting to compare results. We would track how quickly tickets get assigned, how many overdue issues remain open and whether the weekly report is useful to your team.
+
+If this sounds worth testing, could we schedule 20 minutes with the person who approves the pilot to agree on scope, success measures and a start date?
+
+Thanks,
+Kgomotso

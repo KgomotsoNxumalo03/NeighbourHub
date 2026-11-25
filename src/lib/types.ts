@@ -111,10 +111,13 @@ export type Ticket = {
   location: string;
   imageName?: string;
   imagePreview?: string;
+  photoData?: string;
   status: TicketStatus;
   ownerName: string;
   supporters: string[];
   estimatedCompletionAt?: string;
+  dueAt?: string;
+  resolvedAt?: string;
   resolutionNotes?: string;
   adminNotes: string;
   adminNotesHistory: AdminNote[];

@@ -9,6 +9,7 @@ import { announcementPriorities, communityStatusLevels, ticketCategoryGroups, ti
 import type { Announcement, CommunityStatus, Ticket } from "@/lib/types";
 import { getCurrentUser } from "@/lib/client-auth";
 import { getStoredCommunityId } from "@/lib/community";
+import { isMaintenanceOverdue } from "@/lib/tickets";
 import { Select } from "@/components/ui";
 
 export default function AdminPage() {
@@ -34,6 +35,7 @@ export default function AdminPage() {
     if (search.trim()) params.set("search", search.trim());
     params.set("sort", sortBy);
     params.set("communityId", communityId);
+    if (user) params.set("adminId", user.id);
     const response = await fetch(`/api/tickets?${params.toString()}`);
     const data = await response.json();
     setTickets(data.tickets || []);
@@ -70,12 +72,13 @@ export default function AdminPage() {
     };
   }, [tickets]);
 
-  async function updateTicket(ticket: Ticket, status: string, adminNotes: string, ownerName: string, estimatedCompletionAt: string, resolutionNotes: string) {
-    await fetch("/api/tickets", {
+  async function updateTicket(ticket: Ticket, status: string, adminNotes: string, ownerName: string, dueAt: string, estimatedCompletionAt: string, resolutionNotes: string) {
+    const response = await fetch("/api/tickets", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: ticket.id, status, adminNotes, ownerName, estimatedCompletionAt, resolutionNotes, actorName: "Admin Manager", actorRole: "admin" }),
+      body: JSON.stringify({ id: ticket.id, status, adminNotes, ownerName, dueAt, estimatedCompletionAt, resolutionNotes, actorName: user?.name, actorRole: user?.role, actorId: user?.id }),
     });
+    if (!response.ok) throw new Error((await response.json()).message || "Unable to save ticket.");
     await loadTickets();
   }
 
@@ -285,18 +288,29 @@ function Stat({ title, value, icon: Icon }: { title: string; value: number; icon
   );
 }
 
-function AdminTicket({ ticket, onSave }: { ticket: Ticket; onSave: (ticket: Ticket, status: string, adminNotes: string, ownerName: string, estimatedCompletionAt: string, resolutionNotes: string) => Promise<void> }) {
+function AdminTicket({ ticket, onSave }: { ticket: Ticket; onSave: (ticket: Ticket, status: string, adminNotes: string, ownerName: string, dueAt: string, estimatedCompletionAt: string, resolutionNotes: string) => Promise<void> }) {
   const [status, setStatus] = useState(ticket.status);
   const [adminNotes, setAdminNotes] = useState(ticket.adminNotes);
   const [ownerName, setOwnerName] = useState(ticket.ownerName || "Unassigned");
+  const savedDue = ticket.dueAt ? new Date(ticket.dueAt) : null;
+  const [dueDate, setDueDate] = useState(savedDue ?
+    new Date(savedDue.getTime() - savedDue.getTimezoneOffset() * 60000).toISOString().slice(0, 10) : "");
+  const [saveError, setSaveError] = useState("");
   const [estimatedCompletionAt, setEstimatedCompletionAt] = useState(ticket.estimatedCompletionAt || "");
   const [resolutionNotes, setResolutionNotes] = useState(ticket.resolutionNotes || "");
   const [saving, setSaving] = useState(false);
 
   async function save() {
     setSaving(true);
-    await onSave(ticket, status, adminNotes, ownerName, estimatedCompletionAt, resolutionNotes);
-    setSaving(false);
+    setSaveError("");
+    try {
+      const dueAt = dueDate ? new Date(`${dueDate}T23:59:59.999`).toISOString() : "";
+      await onSave(ticket, status, adminNotes, ownerName, dueAt, estimatedCompletionAt, resolutionNotes);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "Unable to save ticket.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -309,6 +323,7 @@ function AdminTicket({ ticket, onSave }: { ticket: Ticket; onSave: (ticket: Tick
             <StatusBadge value={ticket.status} />
             <PriorityBadge value={ticket.priority} />
           </div>
+          {isMaintenanceOverdue(ticket) && <p className="mt-2 text-sm font-semibold text-red-700">Overdue</p>}
           <p className="mt-2 text-sm leading-6 text-zinc-600">{ticket.description}</p>
           <p className="mt-2 text-sm text-zinc-500">{ticket.category} / {ticket.location} / {ticket.residentName}</p>
           <p className="mt-1 text-sm text-zinc-500">{ticket.supporters?.length || 0} residents affected / Responsible: {ticket.ownerName || "Unassigned"}</p>
@@ -321,18 +336,22 @@ function AdminTicket({ ticket, onSave }: { ticket: Ticket; onSave: (ticket: Tick
           </button>
         ))}
       </div>
-      <div className="mt-4 grid gap-3 md:grid-cols-[180px_180px_1fr_auto] md:items-start">
+      <div className="mt-4 grid gap-3 md:grid-cols-[180px_180px_1fr] md:items-start">
         <Select value={status} onChange={(value) => setStatus(value as Ticket["status"])} options={ticketStatuses} />
-        <input className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm" value={ownerName} onChange={(event) => setOwnerName(event.target.value)} placeholder="Owner/contractor" />
-        <textarea className="min-h-20 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm" value={adminNotes} onChange={(event) => setAdminNotes(event.target.value)} placeholder="Admin notes" />
-        <button onClick={save} disabled={saving} className="rounded-lg bg-[#006B3C] px-4 py-2 text-sm font-bold text-white hover:bg-[#00522f] disabled:opacity-60">
+        <input className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm" value={ownerName} onChange={(event) => setOwnerName(event.target.value)} aria-label="Assignee" placeholder="Staff member or contractor" />
+        <textarea className="min-h-20 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm" value={adminNotes} onChange={(event) => setAdminNotes(event.target.value)} aria-label="Internal staff note" placeholder="Internal staff note" />
+      </div>
+      <div className="mt-3 grid gap-3 md:grid-cols-3">
+        <label className="grid gap-1 text-sm font-semibold">Due date
+          <input type="date" className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm" value={dueDate} onChange={(event) => setDueDate(event.target.value)} />
+        </label>
+        <input className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm" value={estimatedCompletionAt} onChange={(event) => setEstimatedCompletionAt(event.target.value)} aria-label="Estimated completion" placeholder="Estimated completion" />
+        <input className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm" value={resolutionNotes} onChange={(event) => setResolutionNotes(event.target.value)} aria-label="Resolution notes visible to resident" placeholder="Resolution notes visible to resident" />
+      </div>
+      <button onClick={save} disabled={saving} className="mt-3 rounded-lg bg-[#006B3C] px-4 py-2 text-sm font-bold text-white hover:bg-[#00522f] disabled:opacity-60">
           {saving ? "Saving..." : "Save"}
-        </button>
-      </div>
-      <div className="mt-3 grid gap-3 md:grid-cols-2">
-        <input className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm" value={estimatedCompletionAt} onChange={(event) => setEstimatedCompletionAt(event.target.value)} placeholder="Estimated completion, e.g. Friday 14:00" />
-        <input className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm" value={resolutionNotes} onChange={(event) => setResolutionNotes(event.target.value)} placeholder="Resolution notes" />
-      </div>
+      </button>
+      {saveError && <p role="alert" className="mt-3 text-sm text-red-700">{saveError}</p>}
       {ticket.adminNotesHistory.length > 0 && (
         <details className="mt-3 rounded-lg bg-white p-3 text-sm">
           <summary className="cursor-pointer font-bold text-zinc-700">Admin notes history ({ticket.adminNotesHistory.length})</summary>

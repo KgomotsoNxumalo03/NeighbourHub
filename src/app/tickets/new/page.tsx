@@ -21,8 +21,8 @@ export default function NewTicketPage() {
     category: "General complaint",
     priority: "Medium",
     location: "",
-    imageName: "",
   });
+  const [photo, setPhoto] = useState<File | null>(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [similarTickets, setSimilarTickets] = useState<Ticket[]>([]);
@@ -39,21 +39,30 @@ export default function NewTicketPage() {
     setError("");
     setSuccess("");
 
-    const response = await fetch("/api/tickets", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, communityId, userId: user.id, residentName: user.name }),
-    });
-    const data = await response.json();
-    setLoading(false);
-
-    if (!response.ok) {
-      setError(data.message || "Unable to create ticket.");
-      return;
+    try {
+      const photoData = photo ? await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error("Unable to read the photo."));
+        reader.readAsDataURL(photo);
+      }) : undefined;
+      const response = await fetch("/api/tickets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, photoData, imageName: photo?.name, communityId, userId: user.id, residentName: user.name }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.message || "Unable to create ticket.");
+        return;
+      }
+      setSuccess(`Ticket ${data.ticket.reference} created.`);
+      router.push(`/tickets/${data.ticket.id}`);
+    } catch {
+      setError("Unable to submit the report. Check your connection and photo, then try again.");
+    } finally {
+      setLoading(false);
     }
-
-    setSuccess(`Ticket ${data.ticket.reference} created.`);
-    router.push(`/tickets/${data.ticket.id}`);
   }
 
   useEffect(() => {
@@ -103,17 +112,22 @@ export default function NewTicketPage() {
           <label className="mt-5 block text-sm font-semibold">Location / address</label>
           <input className="mt-2 w-full rounded-lg border border-zinc-200 px-3 py-3 text-sm" value={form.location} onChange={(event) => setForm({ ...form, location: event.target.value })} required />
 
-          <label className="mt-5 block text-sm font-semibold">Image placeholder</label>
+          <label htmlFor="ticket-photo" className="mt-5 block text-sm font-semibold">Photo (optional)</label>
+          <p id="ticket-photo-help" className="mt-1 text-sm text-zinc-600">JPG, PNG or WebP, up to 2 MB.</p>
           <div className="mt-2 flex items-center gap-3 rounded-lg border border-dashed border-zinc-300 bg-[#F7F8FA] p-4">
-            <ImagePlus className="text-[#006B3C]" />
-            <input className="w-full bg-transparent text-sm" placeholder="Optional file name, e.g. pothole-photo.jpg" value={form.imageName} onChange={(event) => setForm({ ...form, imageName: event.target.value })} />
+            <ImagePlus aria-hidden="true" className="text-[#006B3C]" />
+            <input id="ticket-photo" aria-describedby="ticket-photo-help" type="file" accept="image/jpeg,image/png,image/webp" className="w-full bg-transparent text-sm" onChange={(event) => {
+              const file = event.currentTarget.files?.[0];
+              if (file && (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 2 * 1024 * 1024)) {
+                event.currentTarget.value = "";
+                setPhoto(null);
+                setError("Choose a JPG, PNG or WebP photo up to 2 MB.");
+                return;
+              }
+              setPhoto(file ?? null);
+              setError("");
+            }} />
           </div>
-          {form.imageName && (
-            <div className="mt-3 flex items-center gap-3 rounded-lg bg-[#C8A23A]/10 p-3 text-sm font-semibold text-[#6C5107]">
-              <ImagePlus size={17} />
-              Preview placeholder: {form.imageName}
-            </div>
-          )}
 
           {similarTickets.length > 0 && (
             <div className="mt-5 rounded-lg border border-[#C8A23A]/40 bg-[#C8A23A]/10 p-4">

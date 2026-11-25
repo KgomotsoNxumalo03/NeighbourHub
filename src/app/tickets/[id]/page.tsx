@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -10,13 +11,14 @@ import { getCurrentUser } from "@/lib/client-auth";
 import { formatDate } from "@/lib/format";
 import type { Ticket } from "@/lib/types";
 import { getStoredCommunityId } from "@/lib/community";
-import { getTicketSla } from "@/lib/tickets";
+import { getTicketSla, isMaintenanceOverdue, isOpenStatus } from "@/lib/tickets";
 
 export default function TicketDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const user = getCurrentUser();
   const communityId = getStoredCommunityId(user);
+  const isStaff = user?.role === "admin" || user?.role === "super-admin";
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(true);
@@ -29,7 +31,9 @@ export default function TicketDetailPage() {
 
   async function loadTicket() {
     setLoading(true);
-    const response = await fetch(`/api/tickets?id=${params.id}&communityId=${communityId}`);
+    const query = new URLSearchParams({ id: params.id, communityId });
+    if (isStaff && user) query.set("adminId", user.id);
+    const response = await fetch(`/api/tickets?${query}`);
     const data = await response.json();
     const found = data.tickets?.[0] || null;
 
@@ -44,7 +48,7 @@ export default function TicketDetailPage() {
 
   useEffect(() => {
     if (user) loadTicket();
-  }, [params.id, user?.id, user?.role]);
+  }, [params.id, user?.id, user?.role, communityId]);
 
   async function addComment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -113,7 +117,7 @@ export default function TicketDetailPage() {
 
       {ticket && (
         <div className="space-y-6">
-          <Link href={user?.role === "admin" ? "/admin" : "/tickets"} className="inline-flex items-center gap-2 text-sm font-bold text-[#006B3C]">
+          <Link href={isStaff ? "/admin" : "/tickets"} className="inline-flex items-center gap-2 text-sm font-bold text-[#006B3C]">
             <ArrowLeft size={17} />
             Back
           </Link>
@@ -139,13 +143,15 @@ export default function TicketDetailPage() {
               <Info label="Responsible" value={ticket.ownerName || "Unassigned"} />
               <Info label="Residents affected" value={String(ticket.supporters?.length || 0)} />
               <Info label="SLA due" value={sla ? formatDate(sla.dueAt) : "N/A"} />
+              {ticket.dueAt && <Info label="Maintenance due date" value={formatDate(ticket.dueAt)} />}
               <Info label="Estimated completion" value={ticket.estimatedCompletionAt || "Not set"} />
             </div>
+            {isMaintenanceOverdue(ticket) && <p className="mt-4 text-sm font-semibold text-red-700">Maintenance is overdue.</p>}
             {sla && (
               <div className="mt-5 rounded-lg bg-[#F7F8FA] p-4">
                 <div className="flex justify-between text-sm font-bold">
                   <span>SLA progress</span>
-                  <span className={sla.overdue ? "text-red-700" : "text-[#006B3C]"}>{sla.overdue ? "Overdue" : `${sla.hoursRemaining}h remaining`}</span>
+                  <span className={sla.overdue ? "text-red-700" : "text-[#006B3C]"}>{!isOpenStatus(ticket.status) ? ticket.status : sla.overdue ? "Overdue" : `${sla.hoursRemaining}h remaining`}</span>
                 </div>
                 <div className="mt-2 h-2 rounded-full bg-zinc-200">
                   <div className={`h-2 rounded-full ${sla.overdue ? "bg-red-600" : "bg-[#C8A23A]"}`} style={{ width: `${sla.progress}%` }} />
@@ -160,13 +166,15 @@ export default function TicketDetailPage() {
               <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
                 <div className="flex items-center gap-3">
                   <ImageIcon className="text-[#006B3C]" />
-                  <h2 className="text-lg font-bold">Image placeholder</h2>
+                  <h2 className="text-lg font-bold">Ticket photo</h2>
                 </div>
                 <div className="mt-4 rounded-lg border border-dashed border-zinc-300 bg-[#F7F8FA] p-5">
-                  {ticket.imagePreview ? (
+                  {ticket.photoData ? (
+                    <Image unoptimized src={ticket.photoData} alt={`Photo attached to ${ticket.reference}`} width={800} height={600} className="h-auto max-h-[32rem] w-full object-contain" />
+                  ) : ticket.imagePreview ? (
                     <p className="text-sm font-semibold text-zinc-700">{ticket.imagePreview}</p>
                   ) : (
-                    <p className="text-sm text-zinc-500">No image placeholder was added to this ticket.</p>
+                    <p className="text-sm text-zinc-500">No photo was attached.</p>
                   )}
                 </div>
               </div>
@@ -219,7 +227,7 @@ export default function TicketDetailPage() {
                   <h2 className="text-lg font-bold">Activity timeline</h2>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {["All", "status", "comment", "admin-note", "reopened"].map((item) => (
+                  {["All", "status", "comment", ...(isStaff ? ["admin-note"] : []), "reopened"].map((item) => (
                     <button key={item} onClick={() => setActivityFilter(item)} className={`rounded-lg px-3 py-1.5 text-xs font-bold ${activityFilter === item ? "bg-[#006B3C] text-white" : "bg-[#F7F8FA] text-zinc-700"}`}>{item}</button>
                   ))}
                 </div>
@@ -233,7 +241,7 @@ export default function TicketDetailPage() {
                 </div>
               </div>
 
-              {ticket.adminNotesHistory.length > 0 && (
+              {isStaff && ticket.adminNotesHistory.length > 0 && (
                 <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
                   <h2 className="text-lg font-bold">Admin notes history</h2>
                   <div className="mt-4 space-y-3">
